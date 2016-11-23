@@ -16,18 +16,20 @@ public class User implements Serializable{
 	private String firstName;
 	private String lastName;
 	private String email;
-	private int uId;
+	private String password;
+	private String universityid;
 	private String role;
 	private boolean activeFlag;
 	private String code;
 	public User(){};
-	public User(String firstName, String lastName, String email, int uId, String role, boolean activeFlag,
+	public User(String firstName, String lastName, String email,String password, String universityid, String role, boolean activeFlag,
 			String code) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
-		this.uId = uId;
+		this.password = password;
+		this.universityid = universityid;
 		this.role = role;
 		this.activeFlag = activeFlag;
 		this.code = code;
@@ -56,12 +58,7 @@ public class User implements Serializable{
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public int getuId() {
-		return uId;
-	}
-	public void setuId(int uId) {
-		this.uId = uId;
-	}
+
 	public String getRole() {
 		return role;
 	}
@@ -79,5 +76,23 @@ public class User implements Serializable{
 	}
 	public void setCode(String code) {
 		this.code = code;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public String getUniversityid() {
+		return universityid;
+	}
+	public void setUniversityid(String universityid) {
+		this.universityid = universityid;
+	}
+	@Override
+	public String toString() {
+		return "User [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
+				+ ", password=" + password + ", uid=" + universityid + ", role=" + role + ", activeFlag=" + activeFlag
+				+ ", code=" + code + "]";
 	}
 }

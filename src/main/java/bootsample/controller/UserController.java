@@ -1,0 +1,95 @@
+package bootsample.controller;
+
+import java.util.ArrayList;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+
+import antlr.collections.List;
+import bootsample.model.User;
+import bootsample.service.NotificationService;
+import bootsample.service.UserService;
+
+@RestController
+public class UserController {
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private NotificationService notificationService;
+	
+	@PostMapping("/api/register")
+	public ModelAndView registerUser(@RequestBody User user)
+	{
+		ModelMap map = new ModelMap();
+		ArrayList<User> userUid = new ArrayList<>();
+		userUid = (ArrayList<User>) userService.findUserByUid(user.getUniversityid());
+		User userEmail = userService.findUserByEmail(user.getEmail());
+		if(userUid.size()==2){
+			map.addAttribute("message","UID already exists");
+			return new ModelAndView(new MappingJackson2JsonView(),map);
+		}else if(userUid.size()==1 && userUid.get(0).getRole().equals(user.getRole())){
+			map.addAttribute("message","UID already exists");
+			return new ModelAndView(new MappingJackson2JsonView(),map);
+		}else if(!(userEmail==null)){
+			map.addAttribute("message","Email ID already exists");
+			return new ModelAndView(new MappingJackson2JsonView(),map);
+		}
+		else{			
+			String code = notificationService.sendEmailVerificationCode(user);
+			user.setCode(code);
+			user.setActiveFlag(false);
+			map.addAttribute("user", user);
+			System.out.println(user.toString());
+			userService.saveUser(user);
+			return new ModelAndView(new MappingJackson2JsonView(),map);
+		}
+		
+	}
+	
+	@PostMapping("/api/register/approve")
+	public ModelAndView approveRegistration(@RequestParam(value="userId",required=true) int userId,
+			@RequestParam(value="code",required=true) String code){
+		ModelMap map = new ModelMap();
+		User user = userService.findUser(userId);
+		if(user.getCode().equals(code)){
+			user.setActiveFlag(true);
+			userService.saveUser(user);
+			map.addAttribute("user",user);
+			return new ModelAndView(new MappingJackson2JsonView(),map);
+		}else{
+			map.addAttribute("message", "Invalid Code, Try Again");
+			return new ModelAndView(new MappingJackson2JsonView(),map);
+		}
+		
+	}
+	@PostMapping("/api/login")
+	public ModelAndView userLogin(@RequestParam(value="email",required=true) String email,
+			@RequestParam(value="password",required=true) String password){
+		ModelMap map = new ModelMap();
+		User user = userService.findUserByEmail(email);
+		if(user==null){
+			map.addAttribute("message", "Invalid username");
+			return new ModelAndView(new MappingJackson2JsonView(),map);
+		}else if(!(user.getPassword().equals(password))){
+			map.addAttribute("message","Incorrect Password");
+		}else if(user.getPassword().equals(password) && !user.isActiveFlag()){
+			map.addAttribute("message", "Account not verfied");
+			return new ModelAndView(new MappingJackson2JsonView(),map);
+		}else if(user.getPassword().equals(password)){
+			map.addAttribute("message", "Login successful");
+			return new ModelAndView(new MappingJackson2JsonView(),map);
+		}
+		map.addAttribute("message", "Login Error");
+		return new ModelAndView(new MappingJackson2JsonView(),map);				
+	}
+
+}
