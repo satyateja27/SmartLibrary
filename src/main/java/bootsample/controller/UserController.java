@@ -2,8 +2,12 @@ package bootsample.controller;
 
 import java.util.ArrayList;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +29,7 @@ public class UserController {
 	
 	@Autowired
 	private NotificationService notificationService;
-	
+		
 	@PostMapping("/api/register")
 	public ModelAndView registerUser(@RequestBody User user)
 	{
@@ -72,7 +76,7 @@ public class UserController {
 		
 	}
 	@PostMapping("/api/login")
-	public ModelAndView userLogin(@RequestParam(value="email",required=true) String email,
+	public ModelAndView userLogin(HttpServletRequest request,@RequestParam(value="email",required=true) String email,
 			@RequestParam(value="password",required=true) String password){
 		ModelMap map = new ModelMap();
 		User user = userService.findUserByEmail(email);
@@ -86,11 +90,37 @@ public class UserController {
 			return new ModelAndView(new MappingJackson2JsonView(),map);
 		}else if(user.getPassword().equals(password)){
 			map.addAttribute("message", "Login successful");
+			HttpSession httpSession = request.getSession();
+			httpSession.putValue("user", user);
 			return new ModelAndView(new MappingJackson2JsonView(),map);
 		}
 		map.addAttribute("message", "Login Error");
 		return new ModelAndView(new MappingJackson2JsonView(),map);				
 	}
+	@GetMapping("/api/setSampleSession")
+	public ModelAndView setDataSession(HttpServletRequest request){
+		User user = userService.findUser(1);
+		ModelMap map = new ModelMap();
+		map.addAttribute("user", user);
+		HttpSession httpSession = request.getSession();
+		httpSession.putValue("user", user);
+		return new ModelAndView(new MappingJackson2JsonView(),map);
+	}
+	@GetMapping("/api/getSampleSession")
+	public ModelAndView getDataSession(HttpServletRequest request){
+		ModelMap map = new ModelMap();
+		map.addAttribute("user", request.getSession().getAttribute("user"));
+		return new ModelAndView(new MappingJackson2JsonView(),map);
+	}
+	@GetMapping("/api/deleteSession")
+	public ModelAndView deleteSession(HttpServletRequest request){
+		request.getSession().invalidate();
+		ModelMap map = new ModelMap();
+		map.addAttribute("messgae", "Session Invalidated");
+		return new ModelAndView(new MappingJackson2JsonView(),map);	
+	}
+	
+	
 
 }
 

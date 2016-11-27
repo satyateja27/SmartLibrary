@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+<<<<<<< Updated upstream
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -14,6 +15,17 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+=======
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+>>>>>>> Stashed changes
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,9 +35,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.jayway.jsonpath.JsonPath;
+
+import bootsample.model.Book;
+import bootsample.model.User;
+import bootsample.service.BookService;
 
 import bootsample.model.Book;
 import bootsample.model.Transaction;
@@ -38,6 +56,7 @@ import bootsample.service.UserService;
 
 @RestController
 public class BookController {
+<<<<<<< Updated upstream
 	@Autowired
 	private TransactionService transactionService;
 	@Autowired
@@ -47,14 +66,69 @@ public class BookController {
 	@Autowired
 	private NotificationService notificationService;
 
+=======
+	
+
+	@Autowired
+	private BookService bookService;
+	
+	
+	@PostMapping("/api/book/add")
+	public ModelAndView addBook(@RequestBody Book book,HttpServletRequest request){
+		ModelMap map = new ModelMap();
+		User user = (User) request.getSession().getAttribute("user");
+		book.setCreatedUser(user);
+		book.setUpdatedUser(user);
+		Date date = new Date();
+		book.setUpdatedTime(date);
+		book.setStatus(true);
+		bookService.addBook(book);
+		map.addAttribute("message","Book Created");
+		return new ModelAndView(new MappingJackson2JsonView(),map);
+	}
+	@PostMapping("/api/book/edit")
+	public ModelAndView editBook(@RequestBody Book book,HttpServletRequest request){
+		ModelMap map = new ModelMap();
+		User user = (User) request.getSession().getAttribute("user");
+		book.setUpdatedUser(user);
+		bookService.addBook(book);
+		map.addAttribute("message","Edit Successfull");
+		return new ModelAndView(new MappingJackson2JsonView(),map);
+	}
+	@GetMapping("/api/book/get")
+	public ModelAndView getBook(@RequestParam(value="bookId",required=true) int bookId){
+		Book book = bookService.getBookById(bookId);
+		ModelMap map = new ModelMap();
+		map.addAttribute("book",book);
+		return new ModelAndView(new MappingJackson2JsonView(),map);		
+	}
+	@PostMapping("/api/book/delete") 
+	public ModelAndView deleteBook(@RequestParam(value="bookId",required=true) int bookId){
+		ModelMap map = new ModelMap();
+		/*
+		 * Should Implement the business logic to check if the book is rented out to any patron,in that case delete is not
+		 * possible.
+		 */		
+		bookService.deleteBookById(bookId);
+		map.addAttribute("message", "Delete Succesful");
+		return new ModelAndView(new MappingJackson2JsonView(),map);
+	}
+
+	
+>>>>>>> Stashed changes
 	@GetMapping("/api/book/getBook")
 	public ModelAndView getBookByIsbn(@RequestParam(value = "isbn", required = true) String isbn) throws IOException {
 		ModelMap map = new ModelMap();
+<<<<<<< Updated upstream
 		String bookUrl = "https://www.googleapis.com/books/v1/volumes?q=isbn:" + isbn;
+=======
+		String bookUrl = "http://isbndb.com/api/v2/json/AI9PNP81/book/"+isbn;
+>>>>>>> Stashed changes
 		URL url = new URL(bookUrl);
 		HttpURLConnection request = (HttpURLConnection) url.openConnection();
 		request.connect();
 		JsonParser parser = new JsonParser();
+<<<<<<< Updated upstream
 		JsonElement element = parser.parse(new InputStreamReader((InputStream) request.getContent()));
 		JsonObject object = element.getAsJsonObject();
 		System.out.println(object.toString());
@@ -164,7 +238,22 @@ public class BookController {
 			System.out.println("could not reissue book");
 		}
 		return new ModelAndView(new MappingJackson2JsonView(), map);
+=======
+		JsonElement element = parser.parse(new InputStreamReader((InputStream)request.getInputStream()));
+		JsonObject object = element.getAsJsonObject();
+		String title = JsonPath.read(object.toString(),"$.data[0].title");
+		String publisher = JsonPath.read(object.toString(),"$.data[0].publisher_name");
+		String author = JsonPath.read(object.toString(),"$.data[0].author_data[0].name");
+		String description = JsonPath.read(object.toString(),"$.data[0].publisher_text");
+		map.addAttribute("title", title);
+		map.addAttribute("publisher", publisher);
+		map.addAttribute("author", author);
+		map.addAttribute("description",description);
+		return new ModelAndView(new MappingJackson2JsonView(),map);
+>>>>>>> Stashed changes
 	}
+	
+
 
 }
 
