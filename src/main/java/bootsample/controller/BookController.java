@@ -5,27 +5,21 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-<<<<<<< Updated upstream
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-=======
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
->>>>>>> Stashed changes
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,7 +50,7 @@ import bootsample.service.UserService;
 
 @RestController
 public class BookController {
-<<<<<<< Updated upstream
+
 	@Autowired
 	private TransactionService transactionService;
 	@Autowired
@@ -66,11 +60,6 @@ public class BookController {
 	@Autowired
 	private NotificationService notificationService;
 
-=======
-	
-
-	@Autowired
-	private BookService bookService;
 	
 	
 	@PostMapping("/api/book/add")
@@ -114,26 +103,25 @@ public class BookController {
 		return new ModelAndView(new MappingJackson2JsonView(),map);
 	}
 
-	
->>>>>>> Stashed changes
 	@GetMapping("/api/book/getBook")
 	public ModelAndView getBookByIsbn(@RequestParam(value = "isbn", required = true) String isbn) throws IOException {
 		ModelMap map = new ModelMap();
-<<<<<<< Updated upstream
-		String bookUrl = "https://www.googleapis.com/books/v1/volumes?q=isbn:" + isbn;
-=======
 		String bookUrl = "http://isbndb.com/api/v2/json/AI9PNP81/book/"+isbn;
->>>>>>> Stashed changes
 		URL url = new URL(bookUrl);
 		HttpURLConnection request = (HttpURLConnection) url.openConnection();
 		request.connect();
-		JsonParser parser = new JsonParser();
-<<<<<<< Updated upstream
-		JsonElement element = parser.parse(new InputStreamReader((InputStream) request.getContent()));
+		JsonParser parser = new JsonParser();		
+		JsonElement element = parser.parse(new InputStreamReader((InputStream)request.getInputStream()));
 		JsonObject object = element.getAsJsonObject();
-		System.out.println(object.toString());
-		map.addAttribute("book", object);
-		return new ModelAndView(new MappingJackson2JsonView(), map);
+		String title = JsonPath.read(object.toString(),"$.data[0].title");
+		String publisher = JsonPath.read(object.toString(),"$.data[0].publisher_name");
+		String author = JsonPath.read(object.toString(),"$.data[0].author_data[0].name");
+		String description = JsonPath.read(object.toString(),"$.data[0].publisher_text");
+		map.addAttribute("title", title);
+		map.addAttribute("publisher", publisher);
+		map.addAttribute("author", author);
+		map.addAttribute("description",description);
+		return new ModelAndView(new MappingJackson2JsonView(),map);
 	}
 
 	@PostMapping(value = "/api/book/checkout", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -237,20 +225,7 @@ public class BookController {
 		} else {
 			System.out.println("could not reissue book");
 		}
-		return new ModelAndView(new MappingJackson2JsonView(), map);
-=======
-		JsonElement element = parser.parse(new InputStreamReader((InputStream)request.getInputStream()));
-		JsonObject object = element.getAsJsonObject();
-		String title = JsonPath.read(object.toString(),"$.data[0].title");
-		String publisher = JsonPath.read(object.toString(),"$.data[0].publisher_name");
-		String author = JsonPath.read(object.toString(),"$.data[0].author_data[0].name");
-		String description = JsonPath.read(object.toString(),"$.data[0].publisher_text");
-		map.addAttribute("title", title);
-		map.addAttribute("publisher", publisher);
-		map.addAttribute("author", author);
-		map.addAttribute("description",description);
-		return new ModelAndView(new MappingJackson2JsonView(),map);
->>>>>>> Stashed changes
+		return new ModelAndView(new MappingJackson2JsonView(), map);		
 	}
 	
 

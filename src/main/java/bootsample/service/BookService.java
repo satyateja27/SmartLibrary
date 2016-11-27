@@ -28,7 +28,7 @@ public class BookService {
 	}
 
 	public Book findOne(int id) {
-		return BookRepository.findOne(id);
+		return bookRepository.findOne(id);
 	}
 }
 
