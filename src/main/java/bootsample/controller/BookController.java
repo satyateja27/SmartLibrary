@@ -243,7 +243,33 @@ public class BookController {
 		return new ModelAndView(new MappingJackson2JsonView(),map);
 	}
 
+	@GetMapping("/api/book/search/author")
+	public ModelAndView getBooksByAuthor(@RequestParam(value="author", required=true) String author){
+		ModelMap map = new ModelMap();
+		map.addAttribute("book",bookService.findBookByAuthor(author));
+		return new ModelAndView(new MappingJackson2JsonView(),map);
+	}
 
+	@GetMapping("/api/book/search/title")
+	public ModelAndView getBooksByTitle(@RequestParam(value="title", required=true) String title){
+		ModelMap map = new ModelMap();
+		map.addAttribute("book",bookService.findBookByTitle(title));
+		return new ModelAndView(new MappingJackson2JsonView(),map);
+	}
+	
+	@GetMapping("/api/book/search/publisher")
+	public ModelAndView getBooksByPublisher(@RequestParam(value="publisher", required=true) String publisher){
+		ModelMap map = new ModelMap();
+		map.addAttribute("book",bookService.findBookByPublisher(publisher));
+		return new ModelAndView(new MappingJackson2JsonView(),map);
+	}
+	
+	@GetMapping("/api/book/search/publicationYear")
+	public ModelAndView getBooksByPublicationYear(@RequestParam(value="publicationYear", required=true) int publicationYear){
+		ModelMap map = new ModelMap();
+		map.addAttribute("book",bookService.findBookByPublicationYear(publicationYear));
+		return new ModelAndView(new MappingJackson2JsonView(),map);
+	}
 
 }
 
