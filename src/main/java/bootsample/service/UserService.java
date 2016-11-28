@@ -34,4 +34,8 @@ public class UserService {
 	public User findUser(int userId){
 		return userRepository.findOne(userId);
 	}
+	
+	public List<User> findOtherLibrarians(int userId){
+		return userRepository.retrieveOtherLibrarians(userId);
+	}
 }

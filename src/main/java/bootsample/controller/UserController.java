@@ -119,8 +119,11 @@ public class UserController {
 		map.addAttribute("messgae", "Session Invalidated");
 		return new ModelAndView(new MappingJackson2JsonView(),map);	
 	}
-	
-	
-
+	@GetMapping("/api/user/findOtherLibrarian")
+	public ModelAndView findOtherLibrarians(@RequestParam(value="userId",required=true) int userId){
+		ModelMap map = new ModelMap();
+		map.addAttribute("users", userService.findOtherLibrarians(userId));
+		return new ModelAndView(new MappingJackson2JsonView(),map);
+	}
 }
 

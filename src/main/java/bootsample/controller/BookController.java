@@ -228,6 +228,21 @@ public class BookController {
 		return new ModelAndView(new MappingJackson2JsonView(), map);		
 	}
 	
+	@GetMapping("/api/book/getBookDetailsOtherLibrarian")
+	public ModelAndView getBookDetailsOtherLibrarian(@RequestParam(value="userId",required=true) int userId){
+		ModelMap map = new ModelMap();
+		map.addAttribute("created", bookService.findBookCreatedOtherLibrarian(userId));
+		map.addAttribute("edited", bookService.findBookEditedOtherLibrarian(userId));
+		return new ModelAndView(new MappingJackson2JsonView(),map);		
+	}
+	
+	@GetMapping("/api/book/search/tag")
+	public ModelAndView getBooksByTag(@RequestParam(value="tagName",required=true) String tagName){
+		ModelMap map = new ModelMap();
+		map.addAttribute("book",bookService.findBookByTagName(tagName));
+		return new ModelAndView(new MappingJackson2JsonView(),map);
+	}
+
 
 
 }

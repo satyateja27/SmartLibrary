@@ -14,5 +14,8 @@ public interface UserRepository extends CrudRepository<User,Integer>{
 	
 	@Query(value="select * from smartlibrary.user where universityid=?",nativeQuery=true)
 	public List<User> retrieveUsersByUid(String string);
+	
+	@Query(value="select * from smartlibrary.user where role='librarian' and user_id!=?",nativeQuery=true)
+	public List<User> retrieveOtherLibrarians(int userId);
 
 }
