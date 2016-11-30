@@ -41,17 +41,32 @@
 	<p>Today's welcome message is:</p>
 
 	<h1>{{myWelcome.data.name}}</h1>
-
+	<h1>${sessionScope.user.userId}</h1>
+	<h1>{{name}}</h1>  <button ng-click="myFunc()">OK</button>
+  	<p>The button has been clicked {{count}} times.</p>
 	</div>
 	
 	
 <script>
 var app = angular.module('myApp', []);
-app.controller('myCtrl', function($scope, $http) {
+app.controller('myCtrl', function($scope, $http,$window) {
   $http.get("/hello")
   .then(function(response) {
       $scope.myWelcome = response;
   });
+  $scope.count = 0;
+  $scope.myFunc = function() {
+	  $window.location.href = "http://google.com";
+      $scope.count++;
+  };
+  $http.get("/api/setSampleSession")
+  .then(function(response) {
+	  $scope.user = sessionStorage.getItem("user");
+  });
+  $scope.myFunction = function(){
+	  $window.location.href = "http://google.com";
+	  $scope.name = "Vimal";
+  }
 });
 </script>
 	

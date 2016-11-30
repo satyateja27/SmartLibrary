@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Scheduled;
+
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -242,6 +244,14 @@ public class BookController {
 		map.addAttribute("book",bookService.findBookByTagName(tagName));
 		return new ModelAndView(new MappingJackson2JsonView(),map);
 	}
+	
+	/*
+	@Scheduled(cron="0,30 * * * * *")
+	public void checkForScheduling(){
+		//Runs every 30 sec.
+		System.out.println("Checking Scheduler");		
+	}
+	*/
 
 	@GetMapping("/api/book/search/author")
 	public ModelAndView getBooksByAuthor(@RequestParam(value="author", required=true) String author){

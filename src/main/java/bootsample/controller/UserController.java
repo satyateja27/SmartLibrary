@@ -60,7 +60,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/api/register/approve")
-	public ModelAndView approveRegistration(@RequestParam(value="userId",required=true) int userId,
+	public ModelAndView approveRegistration(HttpServletRequest request,@RequestParam(value="userId",required=true) int userId,
 			@RequestParam(value="code",required=true) String code){
 		ModelMap map = new ModelMap();
 		User user = userService.findUser(userId);
@@ -68,6 +68,8 @@ public class UserController {
 			user.setActiveFlag(true);
 			userService.saveUser(user);
 			map.addAttribute("user",user);
+			map.addAttribute("message", "success");
+			request.getSession().invalidate();
 			return new ModelAndView(new MappingJackson2JsonView(),map);
 		}else{
 			map.addAttribute("message", "Invalid Code, Try Again");
@@ -87,6 +89,8 @@ public class UserController {
 			map.addAttribute("message","Incorrect Password");
 		}else if(user.getPassword().equals(password) && !user.isActiveFlag()){
 			map.addAttribute("message", "Account not verfied");
+			HttpSession httpSession = request.getSession();
+			httpSession.putValue("user", user);
 			return new ModelAndView(new MappingJackson2JsonView(),map);
 		}else if(user.getPassword().equals(password)){
 			map.addAttribute("message", "Login successful");

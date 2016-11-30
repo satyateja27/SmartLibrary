@@ -28,7 +28,13 @@ public class MainController {
 	@GetMapping("/")
 	public String home(HttpServletRequest request){
 		request.setAttribute("mode", "MODE_HOME");
-		return "index";
+		return "LogIn";
+	}
+	
+	@GetMapping("/approveUser")
+	public String approve(HttpServletRequest request){
+		request.setAttribute("mode", "MODE_HOME");
+		return "approveUser";
 	}
 	
 	@GetMapping("/all-tasks")
