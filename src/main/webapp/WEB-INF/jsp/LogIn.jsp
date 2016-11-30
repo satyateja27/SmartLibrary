@@ -55,7 +55,6 @@
 		<div><button type="button" ng-click="login()" class="btn btn-primary">Login</button></div>
 		<br>
 		<div><p>Don't have an account yet?  <a href="/signup">Signup here</a></p></div>
-		<div>{{result}}</div>
 		</div>
 		
 		<script type="text/javascript">

@@ -33,8 +33,12 @@ public class MainController {
 	
 	@GetMapping("/approveUser")
 	public String approve(HttpServletRequest request){
-		request.setAttribute("mode", "MODE_HOME");
 		return "approveUser";
+	}
+	
+	@GetMapping("/signup")
+	public String signUp(HttpServletRequest request){
+		return "SignUp";
 	}
 	
 	@GetMapping("/all-tasks")
