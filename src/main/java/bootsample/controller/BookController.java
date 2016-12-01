@@ -93,6 +93,13 @@ public class BookController {
 		map.addAttribute("book",book);
 		return new ModelAndView(new MappingJackson2JsonView(),map);		
 	}
+	@GetMapping("/api/book/getByLibrarian")
+	public ModelAndView getBooks(){
+		List<Book> books = bookService.findAllBooksByLibrarian();
+		ModelMap map = new ModelMap();
+		map.addAttribute("book",books);
+		return new ModelAndView(new MappingJackson2JsonView(),map);		
+	}
 	@PostMapping("/api/book/delete") 
 	public ModelAndView deleteBook(@RequestParam(value="bookId",required=true) int bookId){
 		ModelMap map = new ModelMap();

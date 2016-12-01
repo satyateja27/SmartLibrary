@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.time.Clock;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -18,7 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
+import bootsample.model.Book;
 import bootsample.model.Task;
+import bootsample.service.BookService;
 import bootsample.service.NotificationService;
 import bootsample.service.TaskService;
 
@@ -35,6 +38,9 @@ public class SampleRestController {
 	
 	@Autowired
 	private HttpSession httpSession;
+	
+	@Autowired
+	private BookService bookService;
 
 	@GetMapping("/hello")
 	public ModelAndView hello(){
@@ -58,6 +64,11 @@ public class SampleRestController {
 		return new ModelAndView(new MappingJackson2JsonView(), map);		
 	}
 	*/
+	
+	@GetMapping("/testing")
+	public ModelAndView test(){
+		return new ModelAndView("LibrarianDashboard");		
+	}
 	
 	
 
