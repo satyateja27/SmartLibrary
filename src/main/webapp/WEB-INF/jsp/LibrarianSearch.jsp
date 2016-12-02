@@ -73,11 +73,23 @@
          			<div class="col-lg-2">
          				<select class="form-control" ng-change="onOptionChange(searchBy)" ng-model="searchBy" required>
                         	<option disabled value="">Search By</option>
-                            <option ng-repeat="option in carSearchOptions" ng-value="option.value">{{option.name}}</option>
+                            <option ng-repeat="option in bookSearchOptions" ng-value="option.value">{{option.name}}</option>
+                         </select>
+         			</div>
+         			<div class="col-lg-2">
+         				<select class="form-control" ng-change="onOptionChange(createdBy)" ng-model="createdBy" required>
+                        	<option disabled value="">Created By</option>
+                            <option ng-repeat="option in createdSearchOptions" ng-value="option.value">{{option.name}}</option>
+                         </select>
+         			</div>
+         			<div class="col-lg-2">
+         				<select class="form-control" ng-change="onOptionChange(updatedBy)" ng-model="UpdatedBy" required>
+                        	<option disabled value="">Last Updated By</option>
+                            <option ng-repeat="option in updatedSearchOptions" ng-value="option.value">{{option.name}}</option>
                          </select>
          			</div>	
-         			<div class="col-lg-6"><input type="text" ng-model="searchContent" class="form-control"/></div>
-         			<div class="col-lg-3"><button class="btn btn-primary" ng-click="search(searchContent)">Search</button></div>
+         			<div class="col-lg-4"><input type="text" ng-model="searchContent" class="form-control"/></div>
+         			<div class="col-lg-2"><button class="btn btn-primary" ng-click="search(searchContent)">Search</button></div>
          		</div>
          		<br/>
          		<div class="row" ng-hide="show">
@@ -118,12 +130,10 @@
          		$scope.carSearchOptions = [{'value': 'author', 'name': 'Author'}, {'value': 'title', 'name': 'Title'},
          		                          {'value': 'publisher', 'name': 'Publisher'}, {'value': 'publicationYear', 'name': 'Publication Year'}];
          		var searchBy;
-         		var searchContent;
          		$scope.onOptionChange = function(input){
          			searchBy = input;
          		};
-         		$scope.search = function(content){
-         			searchContent = content;
+         		$scope.search = function(searchContent){
          			$http({
          				method:"GET",
          				url:'/api/book/search/'+searchBy,
