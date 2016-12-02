@@ -19,11 +19,13 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -77,14 +79,28 @@ public class BookController {
 		map.addAttribute("message","Book Created");
 		return new ModelAndView(new MappingJackson2JsonView(),map);
 	}
-	@PostMapping("/api/book/edit")
-	public ModelAndView editBook(@RequestBody Book book,HttpServletRequest request){
+	@PostMapping("/api/book/{bookId}/edit")
+	public void editBook(@PathVariable(value="bookId") int bookId,
+			@RequestParam(value="author",required=true) String author,
+			@RequestParam(value="callNumber",required=true) String callNumber,
+			@RequestParam(value="location",required=true) String location,
+			@RequestParam(value="publisher",required=true) String publisher,
+			@RequestParam(value="title",required=true) String title,
+			@RequestParam(value="publicationYear",required=true) int publicationYear,
+			HttpServletRequest request, HttpServletResponse response) throws IOException{
 		ModelMap map = new ModelMap();
+		Book book = bookService.findOne(bookId);
 		User user = (User) request.getSession().getAttribute("user");
 		book.setUpdatedUser(user);
+		book.setAuthor(author);
+		book.setCallNumber(callNumber);
+		book.setLocation(location);
+		book.setPublisher(publisher);
+		book.setTitle(title);
+		book.setYearOfPublication(publicationYear);
 		bookService.addBook(book);
 		map.addAttribute("message","Edit Successfull");
-		return new ModelAndView(new MappingJackson2JsonView(),map);
+		response.sendRedirect("/book/librarianSearch");
 	}
 	@GetMapping("/api/book/get")
 	public ModelAndView getBook(@RequestParam(value="bookId",required=true) int bookId){
@@ -97,7 +113,7 @@ public class BookController {
 	public ModelAndView getBooks(){
 		List<Book> books = bookService.findAllBooksByLibrarian();
 		ModelMap map = new ModelMap();
-		map.addAttribute("book",books);
+		map.addAttribute("books",books);
 		return new ModelAndView(new MappingJackson2JsonView(),map);		
 	}
 	@PostMapping("/api/book/delete") 
@@ -263,29 +279,39 @@ public class BookController {
 	@GetMapping("/api/book/search/author")
 	public ModelAndView getBooksByAuthor(@RequestParam(value="author", required=true) String author){
 		ModelMap map = new ModelMap();
-		map.addAttribute("book",bookService.findBookByAuthor(author));
+		map.addAttribute("books",bookService.findBookByAuthor(author));
 		return new ModelAndView(new MappingJackson2JsonView(),map);
 	}
 
 	@GetMapping("/api/book/search/title")
 	public ModelAndView getBooksByTitle(@RequestParam(value="title", required=true) String title){
 		ModelMap map = new ModelMap();
-		map.addAttribute("book",bookService.findBookByTitle(title));
+		map.addAttribute("books",bookService.findBookByTitle(title));
 		return new ModelAndView(new MappingJackson2JsonView(),map);
 	}
 	
 	@GetMapping("/api/book/search/publisher")
 	public ModelAndView getBooksByPublisher(@RequestParam(value="publisher", required=true) String publisher){
 		ModelMap map = new ModelMap();
-		map.addAttribute("book",bookService.findBookByPublisher(publisher));
+		map.addAttribute("books",bookService.findBookByPublisher(publisher));
 		return new ModelAndView(new MappingJackson2JsonView(),map);
 	}
 	
 	@GetMapping("/api/book/search/publicationYear")
 	public ModelAndView getBooksByPublicationYear(@RequestParam(value="publicationYear", required=true) int publicationYear){
 		ModelMap map = new ModelMap();
-		map.addAttribute("book",bookService.findBookByPublicationYear(publicationYear));
+		map.addAttribute("books",bookService.findBookByPublicationYear(publicationYear));
 		return new ModelAndView(new MappingJackson2JsonView(),map);
+	}
+	@GetMapping("/book/{bookId}/edit")
+	public ModelAndView getEditBook(@PathVariable(value="bookId") int bookId){
+		ModelMap map = new ModelMap();
+		map.addAttribute("book",bookService.findOne(bookId));
+		return new ModelAndView("BookEdit", map);
+	}
+	@GetMapping("/book/librarianSearch")
+	public ModelAndView librarianSearchBook(){
+		return new ModelAndView("LibrarianSearch");
 	}
 
 }

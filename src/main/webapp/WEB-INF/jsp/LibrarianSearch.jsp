@@ -11,7 +11,7 @@
     <meta http-equiv="Cache-Control" content="no-cache"> 
     <meta http-equiv="Expires" content="Sat, 01 Dec 2001 00:00:00 GMT">
     
-    <title>Librarian | Dashboard</title>
+    <title>Book | Search</title>
     
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -40,7 +40,7 @@
 	  
 </head>
 <body>
-	<div ng-app="myApp" ng-controller="myCtrl">
+	<div ng-app="myApp" ng-controller="myCtrl" ng-init="show=true">
 	<div class = "panel panel-default">
             <div class = "panel-body bg-primary" style=" height:65px">
                <nav class="navbar navbar-light">
@@ -68,9 +68,20 @@
          <div>
          	<div class="col-sm-1"></div>
          	<div class="col-sm-10">
-         		<h1>Librarian Dashboard</h1><br/><br/>
-         		<div>
-	         		<h3>All Created Books</h3>
+         		<h1 class="row">Librarian Search</h1><br/><br/>
+         		<div class="row">
+         			<div class="col-lg-2">
+         				<select class="form-control" ng-change="onOptionChange(searchBy)" ng-model="searchBy" required>
+                        	<option disabled value="">Search By</option>
+                            <option ng-repeat="option in carSearchOptions" ng-value="option.value">{{option.name}}</option>
+                         </select>
+         			</div>	
+         			<div class="col-lg-6"><input type="text" ng-model="searchContent" class="form-control"/></div>
+         			<div class="col-lg-3"><button class="btn btn-primary" ng-click="search(searchContent)">Search</button></div>
+         		</div>
+         		<br/>
+         		<div class="row" ng-hide="show">
+	         		<h3>Search Results</h3>
 	         		<table>
 	         			<tr>
 	         				<th>Author</th>
@@ -78,8 +89,10 @@
 	         				<th>Call Number</th>
 	         				<th>Publisher</th>
 	         				<th>Publication Year</th>
-	         				<th>Number of Copies</th>
+	         				<th>Available Copies</th>
+	         				<th>Created By</th>
 	         				<th>Last Updated By</th>
+	         				<th>Operation</th>
 	         			</tr>
 	         			<tr ng-repeat="book in books">
 	         				<td>{{book.author}}</td>
@@ -88,7 +101,10 @@
 	         				<td>{{book.publisher}}</td>
 	         				<td>{{book.yearOfPublication}}</td>
 	         				<td>{{book.numberOfCopies}}</td>
-	         				<td>{{book.updatedUser.firstName}} {{book.updatedUser.lastName}}</td>	
+	         				<td>{{book.createdUser.firstName}} {{book.createdUser.lastName}}</td>
+	         				<td>{{book.updatedUser.firstName}} {{book.updatedUser.lastName}}</td>
+	         				<td><button class="btn" style="background-color:#42f4b6" ng-click="edit(book.bookId)">Edit</button> 
+	         				<button class="btn" style="background-color:#f4426b" ng-click="remove(book.bookId)">Delete</button></td>	
 	         			</tr>
 	         		</table>
          		</div><br/>
@@ -98,10 +114,43 @@
          </div>
          <script>
          	var app = angular.module('myApp',[]);
-         	app.controller('myCtrl', function($scope, $http){
-         		$http.get("/api/book/getByLibrarian").then(function(response){
-         			$scope.books = response.data.books;
-         		});
+         	app.controller('myCtrl', function($scope, $http, $window){
+         		$scope.carSearchOptions = [{'value': 'author', 'name': 'Author'}, {'value': 'title', 'name': 'Title'},
+         		                          {'value': 'publisher', 'name': 'Publisher'}, {'value': 'publicationYear', 'name': 'Publication Year'}];
+         		var searchBy;
+         		var searchContent;
+         		$scope.onOptionChange = function(input){
+         			searchBy = input;
+         		};
+         		$scope.search = function(content){
+         			searchContent = content;
+         			$http({
+         				method:"GET",
+         				url:'/api/book/search/'+searchBy,
+         				params: {author: searchContent,
+         					title: searchContent,
+         					publisher: searchContent,
+         					publicationYear: searchContent},
+         	            headers : {'Content-Type': 'application/json'}
+         			}).success(function(response){
+         				$scope.show = false;
+         				$scope.books = response.books;
+         			});
+         		};
+         		$scope.remove = function(id){
+         			$http({
+         				method:"POST",
+         				url:'/api/book/delete',
+         				params: {bookId:id},
+         	            headers : {'Content-Type': 'application/json'}
+         			}).success(function(response){
+         				window.location.href="/book/librarianSearch";
+         			});
+         		};
+         		$scope.edit = function(id){
+         			window.location.href="/book/"+id+"/edit";
+         			
+         		};
          	});
          </script>
 	

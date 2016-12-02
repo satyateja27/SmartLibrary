@@ -11,7 +11,7 @@
     <meta http-equiv="Cache-Control" content="no-cache"> 
     <meta http-equiv="Expires" content="Sat, 01 Dec 2001 00:00:00 GMT">
     
-    <title>Librarian | Dashboard</title>
+    <title>Book | Edit</title>
     
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -68,30 +68,16 @@
          <div>
          	<div class="col-sm-1"></div>
          	<div class="col-sm-10">
-         		<h1>Librarian Dashboard</h1><br/><br/>
-         		<div>
-	         		<h3>All Created Books</h3>
-	         		<table>
-	         			<tr>
-	         				<th>Author</th>
-	         				<th>Title</th>
-	         				<th>Call Number</th>
-	         				<th>Publisher</th>
-	         				<th>Publication Year</th>
-	         				<th>Number of Copies</th>
-	         				<th>Last Updated By</th>
-	         			</tr>
-	         			<tr ng-repeat="book in books">
-	         				<td>{{book.author}}</td>
-	         				<td>{{book.title}}</td>
-	         				<td>{{book.callNumber}}</td>
-	         				<td>{{book.publisher}}</td>
-	         				<td>{{book.yearOfPublication}}</td>
-	         				<td>{{book.numberOfCopies}}</td>
-	         				<td>{{book.updatedUser.firstName}} {{book.updatedUser.lastName}}</td>	
-	         			</tr>
-	         		</table>
-         		</div><br/>
+         		<h1>Edit Book</h1><br/><br/>
+         		<form class="form-group col-sm-3" method="post" action="/api/book/${book.bookId}/edit">
+	         		<b>Author:</b> <input class="form-control" type="text" placeholder="${book.author}" value="${book.author}" name="author"/><br/><br/>
+	         		<b>Title:</b> <input class="form-control" type="text" placeholder="${book.title}" value="${book.title}" name="title"/><br/><br/>
+	         		<b>Publisher:</b> <input class="form-control" type="text" placeholder="${book.publisher}" value="${book.publisher}" name="publisher"/><br/><br/>
+	         		<b>Publication Year:</b> <input class="form-control" type="text" placeholder="${book.yearOfPublication}" value="${book.yearOfPublication}" name="publicationYear"/><br/><br/>
+         			<b>Call Number:</b> <input class="form-control" type="text" placeholder="${book.callNumber}" value="${book.callNumber}" name="callNumber"/><br/><br/>
+         			<b>Location:</b> <input class="form-control" type="text" placeholder="${book.location}" value="${book.location}" name="location"/><br/><br/>
+         			<input type="submit" value="Update" class="btn btn-primary"/>
+         		</form><br/>
          	</div>
          	<div class="col-sm-1"></div>
          </div>
@@ -99,9 +85,7 @@
          <script>
          	var app = angular.module('myApp',[]);
          	app.controller('myCtrl', function($scope, $http){
-         		$http.get("/api/book/getByLibrarian").then(function(response){
-         			$scope.books = response.data.books;
-         		});
+         		
          	});
          </script>
 	
