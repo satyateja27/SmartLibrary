@@ -75,18 +75,6 @@
                         	<option disabled value="">Search By</option>
                             <option ng-repeat="option in bookSearchOptions" ng-value="option.value">{{option.name}}</option>
                          </select>
-         			</div>
-         			<div class="col-lg-2">
-         				<select class="form-control" ng-change="onOptionChange(createdBy)" ng-model="createdBy" required>
-                        	<option disabled value="">Created By</option>
-                            <option ng-repeat="option in createdSearchOptions" ng-value="option.value">{{option.name}}</option>
-                         </select>
-         			</div>
-         			<div class="col-lg-2">
-         				<select class="form-control" ng-change="onOptionChange(updatedBy)" ng-model="UpdatedBy" required>
-                        	<option disabled value="">Last Updated By</option>
-                            <option ng-repeat="option in updatedSearchOptions" ng-value="option.value">{{option.name}}</option>
-                         </select>
          			</div>	
          			<div class="col-lg-4"><input type="text" ng-model="searchContent" class="form-control"/></div>
          			<div class="col-lg-2"><button class="btn btn-primary" ng-click="search(searchContent)">Search</button></div>
@@ -115,8 +103,7 @@
 	         				<td>{{book.numberOfCopies}}</td>
 	         				<td>{{book.createdUser.firstName}} {{book.createdUser.lastName}}</td>
 	         				<td>{{book.updatedUser.firstName}} {{book.updatedUser.lastName}}</td>
-	         				<td><button class="btn" style="background-color:#42f4b6" ng-click="edit(book.bookId)">Edit</button> 
-	         				<button class="btn" style="background-color:#f4426b" ng-click="remove(book.bookId)">Delete</button></td>	
+	         				<td><button class="btn" style="background-color:#42f4b6" ng-click="addCart(book.bookId)">Add to Cart</button></td>	
 	         			</tr>
 	         		</table>
          		</div><br/>
@@ -147,20 +134,17 @@
          				$scope.books = response.books;
          			});
          		};
-         		$scope.remove = function(id){
+         		$scope.addCart = function(id){
          			$http({
          				method:"POST",
          				url:'/api/book/delete',
          				params: {bookId:id},
          	            headers : {'Content-Type': 'application/json'}
          			}).success(function(response){
-         				window.location.href="/book/librarianSearch";
+         				window.location.href="/book/patronSearch";
          			});
          		};
-         		$scope.edit = function(id){
-         			window.location.href="/book/"+id+"/edit";
-         			
-         		};
+         		
          	});
          </script>
 	
