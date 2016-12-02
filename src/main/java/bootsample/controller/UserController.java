@@ -52,6 +52,7 @@ public class UserController {
 			user.setCode(code);
 			user.setActiveFlag(false);
 			map.addAttribute("user", user);
+			map.addAttribute("message", "success");
 			System.out.println(user.toString());
 			userService.saveUser(user);
 			return new ModelAndView(new MappingJackson2JsonView(),map);
