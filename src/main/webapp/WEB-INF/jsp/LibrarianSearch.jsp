@@ -47,18 +47,18 @@
                   <div class="container-fluid">
                      <ul class="nav navbar-nav">
                         <li class="nav-item">
-                           <a class="nav-link" href="/testing" style="color:white">Librarian Dashboard</a>
+                           <a class="nav-link" href="/librarianDashboard" style="color:white">Librarian Dashboard</a>
                         </li>
                         <li class="nav-item">
                            <a class="nav-link" href="/book/create"style="color:white">Create Book</a>
                         </li>
                         <li class="nav-item">
-                           <a class="nav-link" href="/book/librarianSearch" style="color:white">Search Books</a>
+                           <a class="nav-link" href="/librarianSearch" style="color:white">Search Books</a>
                         </li>
                      </ul>
                      <ul class="nav navbar-nav navbar-right">
                      	<li class="nav-item">
-                           <a class="nav-link" href="#" style="color:white"><span class="glyphicon glyphicon-off"></span> Logout</a>
+                           <button class="nav-link btn" ng-click="logout()" style="color:white"><span class="glyphicon glyphicon-off"></span> Logout</button>
                         </li>
                      </ul>
                   </div>
@@ -71,21 +71,22 @@
          		<h1 class="row">Librarian Search</h1><br/><br/>
          		<div class="row">
          			<div class="col-lg-2">
+         				<select class="form-control" ng-change="onLibrarianChange(librarian)" ng-model="librarian" required>
+                        	<option disabled value="">Other Librarian</option>
+                            <option ng-repeat="option in librarianSearchOptions" ng-value="option.userId">{{option.firstName}}</option>
+                         </select>
+         			</div>
+         			<div class="col-lg-2">
+         				<select class="form-control" ng-change="onLibrarianActionChange(librarianAction)" ng-model="librarianAction" required>
+                        	<option disabled value="">Librarian Action</option>
+                        	<option value="createdBy">Created By</option>
+                        	<option value="updatedBy">Updated By</option>
+                         </select>
+         			</div>
+         			<div class="col-lg-2">
          				<select class="form-control" ng-change="onOptionChange(searchBy)" ng-model="searchBy" required>
                         	<option disabled value="">Search By</option>
                             <option ng-repeat="option in bookSearchOptions" ng-value="option.value">{{option.name}}</option>
-                         </select>
-         			</div>
-         			<div class="col-lg-2">
-         				<select class="form-control" ng-change="onOptionChange(createdBy)" ng-model="createdBy" required>
-                        	<option disabled value="">Created By</option>
-                            <option ng-repeat="option in createdSearchOptions" ng-value="option.value">{{option.name}}</option>
-                         </select>
-         			</div>
-         			<div class="col-lg-2">
-         				<select class="form-control" ng-change="onOptionChange(updatedBy)" ng-model="UpdatedBy" required>
-                        	<option disabled value="">Last Updated By</option>
-                            <option ng-repeat="option in updatedSearchOptions" ng-value="option.value">{{option.name}}</option>
                          </select>
          			</div>	
          			<div class="col-lg-4"><input type="text" ng-model="searchContent" class="form-control"/></div>
@@ -129,23 +130,55 @@
          	app.controller('myCtrl', function($scope, $http, $window){
          		$scope.bookSearchOptions = [{'value': 'author', 'name': 'Author'}, {'value': 'title', 'name': 'Title'},
          		                          {'value': 'publisher', 'name': 'Publisher'}, {'value': 'publicationYear', 'name': 'Publication Year'}];
-         		var searchBy;
+         		$http.get("/api/user/findOtherLibrarian").then(function(response){
+         			$scope.librarianSearchOptions = response.data.users;
+         		});
+         		var searchBy, librarian, librarianAction;
          		$scope.onOptionChange = function(input){
-         			searchBy = input;
+         			searchBy = input;console.log(input);
+         		};
+         		$scope.onLibrarianChange = function(input){
+         			librarian = input;console.log(input);
+         		};
+         		$scope.onLibrarianActionChange = function(input){
+         			librarianAction = input;console.log(input);
          		};
          		$scope.search = function(searchContent){
-         			$http({
-         				method:"GET",
-         				url:'/api/book/search/'+searchBy,
-         				params: {author: searchContent,
-         					title: searchContent,
-         					publisher: searchContent,
-         					publicationYear: searchContent},
-         	            headers : {'Content-Type': 'application/json'}
-         			}).success(function(response){
-         				$scope.show = false;
-         				$scope.books = response.books;
-         			});
+         			if(searchContent == undefined){
+         				if(librarian != undefined && librarianAction != undefined){
+         					$http({
+         						method:'GET',
+         						url:'/api/book/getByOtherLibrarian',
+         						params:{userId: librarian},
+         						headers : {'Content-Type': 'application/json'}
+         					}).success(function(response){
+         						if(librarianAction === 'createdBy'){
+         							$scope.show = false;
+         							$scope.books = response.created;
+         						}else{
+         							$scope.show = false;
+         							$scope.books = response.edited;
+         						};
+         					});
+         				}
+         			}else{
+         				if(librarian == undefined && librarianAction == undefined && searchBy != undefined){
+         					$http({
+                 				method:"GET",
+                 				url:'/api/book/search/'+searchBy,
+                 				params: {author: searchContent,
+                 					title: searchContent,
+                 					publisher: searchContent,
+                 					publicationYear: searchContent},
+                 	            headers : {'Content-Type': 'application/json'}
+                 			}).success(function(response){
+                 				$scope.show = false;
+                 				$scope.books = response.books;
+                 			});
+         				}else if(librarian != undefined && librarianAction != undefined && searchBy != undefined){
+         					///
+         				};
+         			};
          		};
          		$scope.remove = function(id){
          			$http({
@@ -161,6 +194,16 @@
          			window.location.href="/book/"+id+"/edit";
          			
          		};
+         		$scope.logout = function(){
+         			$http.get('/api/deleteSession').success(function(response){
+         				window.location.href="/";
+         			});
+         		};
+         		$http.get('/api/checkSession').success(function(response){
+    				if(response.message == 'absent'){
+    					window.location.href="/";
+    				}
+    			});
          	});
          </script>
 	

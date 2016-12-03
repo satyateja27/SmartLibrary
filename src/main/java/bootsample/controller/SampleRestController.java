@@ -67,11 +67,10 @@ public class SampleRestController {
 	
 	@GetMapping("/testing")
 	public ModelAndView test(){
-		return new ModelAndView("PatronSearch");		
+		return new ModelAndView("CreateBook");		
 	}
 	
 	
-
 	
 
 }

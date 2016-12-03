@@ -95,6 +95,7 @@ public class UserController {
 			return new ModelAndView(new MappingJackson2JsonView(),map);
 		}else if(user.getPassword().equals(password)){
 			map.addAttribute("message", "Login successful");
+			map.addAttribute("role",user.getRole());
 			HttpSession httpSession = request.getSession();
 			httpSession.putValue("user", user);
 			return new ModelAndView(new MappingJackson2JsonView(),map);
@@ -125,9 +126,23 @@ public class UserController {
 		return new ModelAndView(new MappingJackson2JsonView(),map);	
 	}
 	@GetMapping("/api/user/findOtherLibrarian")
-	public ModelAndView findOtherLibrarians(@RequestParam(value="userId",required=true) int userId){
+	public ModelAndView findOtherLibrarians(HttpServletRequest request){
+		User user = (User) request.getSession().getAttribute("user");
 		ModelMap map = new ModelMap();
-		map.addAttribute("users", userService.findOtherLibrarians(userId));
+		map.addAttribute("users", userService.findOtherLibrarians(user.getUserId()));
+		return new ModelAndView(new MappingJackson2JsonView(),map);
+	}
+	@GetMapping("/api/checkSession")
+	public ModelAndView checkSession(HttpServletRequest request){
+		ModelMap map = new ModelMap();
+		User user = (User) request.getSession().getAttribute("user");
+		if(user == null){
+			map.addAttribute("message","absent");
+		}else{
+			map.addAttribute("message", "present");
+			map.addAttribute("role", user.getRole());
+		}
+		
 		return new ModelAndView(new MappingJackson2JsonView(),map);
 	}
 }

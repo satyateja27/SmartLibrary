@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import bootsample.model.Task;
 import bootsample.service.TaskService;
@@ -41,10 +42,23 @@ public class MainController {
 		return "SignUp";
 	}
 	
+	@GetMapping("/createBook")
+	public String createBook(HttpServletRequest request){
+		return "CreateBook";
+	}
+	
 	@GetMapping("/all-tasks")
 	public String allTasks(HttpServletRequest request){
 		request.setAttribute("tasks", taskService.findAll());
 		request.setAttribute("mode", "MODE_TASKS");
 		return "index";
+	}
+	@GetMapping("/librarianDashboard")
+	public String getLibrarianDashboard(HttpServletRequest request){
+		return "LibrarianDashboard";
+	}
+	@GetMapping("/librarianSearch")
+	public ModelAndView librarianSearchBook(){
+		return new ModelAndView("LibrarianSearch");
 	}
 }

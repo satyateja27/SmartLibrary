@@ -41,11 +41,11 @@ public class BookService {
 		return bookRepository.findBooksEditedOtherLibrarian(userId);
 	}
 	
-	public List<Book> findAllBooksByLibrarian(){
+	public List<Book> findAllBooksByLibrarian(int userId){
 		List<Book> books = (List<Book>) bookRepository.findAll();
 		List<Book> result = new ArrayList<Book>();
 		for(Book book:books){
-			if(book.getCreatedUser().getUserId() == 1){
+			if(book.getCreatedUser().getUserId() == userId){
 				result.add(book);
 			}			
 		}		
@@ -78,6 +78,18 @@ public class BookService {
 	
 	
 	public List<Book> findBookByAuthor(String author){
+		String newAuthor = author.toLowerCase();
+		List<Book> books = (List<Book>)bookRepository.findAll();
+		List<Book> result = new ArrayList<Book>();
+		for(Book book:books){
+			if(book.getAuthor().toLowerCase().contains(newAuthor)){
+				result.add(book);
+			}
+		}
+		return result;
+	}
+	
+	public List<Book> findBookByOtherAuthor(String author, int userId){
 		String newAuthor = author.toLowerCase();
 		List<Book> books = (List<Book>)bookRepository.findAll();
 		List<Book> result = new ArrayList<Book>();
