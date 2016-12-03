@@ -106,6 +106,13 @@ public class BookController {
 		map.addAttribute("book",book);
 		return new ModelAndView(new MappingJackson2JsonView(),map);		
 	}
+	@GetMapping("/api/book/getAllBooks")
+	public ModelAndView getAllBooks(){
+		List<Book> books=bookService.findAllBooks();
+		ModelMap map=new ModelMap();
+		map.addAttribute("books",books);
+		return new ModelAndView(new MappingJackson2JsonView(),map);
+	}
 	@GetMapping("/api/book/getByLibrarian")
 	public ModelAndView getBooks(){
 		List<Book> books = bookService.findAllBooksByLibrarian();
