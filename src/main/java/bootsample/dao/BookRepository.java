@@ -16,4 +16,6 @@ public interface BookRepository extends CrudRepository<Book, Integer>{
 	@Query(value="select * from smartlibrary.book where updated_user_user_id = ?",nativeQuery=true)	
 	public List<Book> findBooksEditedOtherLibrarian(int userId);
 
+	@Query(value="select TOP 1 user_user_id from smartlibrary.waiting where book_book_id=?",nativeQuery=true)
+	public int findUserwaiting(int bookId);
 }
