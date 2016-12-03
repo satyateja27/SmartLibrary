@@ -123,5 +123,9 @@ public class BookService {
 		}
 		return result;
 	}
+
+	public int findUserwaiting(int bookid){
+		return bookRepository.findUserwaiting(bookid);
+	}
 }
 
