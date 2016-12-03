@@ -114,8 +114,10 @@ public class BookController {
 		return new ModelAndView(new MappingJackson2JsonView(),map);
 	}
 	@GetMapping("/api/book/getByLibrarian")
-	public ModelAndView getBooks(){
-		List<Book> books = bookService.findAllBooksByLibrarian();
+	public ModelAndView getLibrarianBooks(HttpServletRequest request){
+		User user = (User) request.getSession().getAttribute("user");
+		int userId = user.getUserId();
+		List<Book> books = bookService.findAllBooksByLibrarian(userId);
 		ModelMap map = new ModelMap();
 		map.addAttribute("books",books);
 		return new ModelAndView(new MappingJackson2JsonView(),map);		
@@ -257,7 +259,7 @@ public class BookController {
 		return new ModelAndView(new MappingJackson2JsonView(), map);		
 	}
 	
-	@GetMapping("/api/book/getBookDetailsOtherLibrarian")
+	@GetMapping("/api/book/getByOtherLibrarian")
 	public ModelAndView getBookDetailsOtherLibrarian(@RequestParam(value="userId",required=true) int userId){
 		ModelMap map = new ModelMap();
 		map.addAttribute("created", bookService.findBookCreatedOtherLibrarian(userId));
@@ -313,10 +315,7 @@ public class BookController {
 		map.addAttribute("book",bookService.findOne(bookId));
 		return new ModelAndView("BookEdit", map);
 	}
-	@GetMapping("/book/librarianSearch")
-	public ModelAndView librarianSearchBook(){
-		return new ModelAndView("LibrarianSearch");
-	}
+	
 
 	@PostMapping("api/book/waiting")
 	public ModelAndView waiting(@RequestBody List<Book> book){

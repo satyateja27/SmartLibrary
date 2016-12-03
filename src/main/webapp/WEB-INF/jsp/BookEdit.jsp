@@ -47,18 +47,18 @@
                   <div class="container-fluid">
                      <ul class="nav navbar-nav">
                         <li class="nav-item">
-                           <a class="nav-link" href="/testing" style="color:white">Librarian Dashboard</a>
+                           <a class="nav-link" href="/librarianDashboard" style="color:white">Librarian Dashboard</a>
                         </li>
                         <li class="nav-item">
                            <a class="nav-link" href="/book/create"style="color:white">Create Book</a>
                         </li>
                         <li class="nav-item">
-                           <a class="nav-link" href="/book/librarianSearch" style="color:white">Search Books</a>
+                           <a class="nav-link" href="/librarianSearch" style="color:white">Search Books</a>
                         </li>
                      </ul>
                      <ul class="nav navbar-nav navbar-right">
                      	<li class="nav-item">
-                           <a class="nav-link" href="#" style="color:white"><span class="glyphicon glyphicon-off"></span> Logout</a>
+                           <button class="nav-link btn" ng-click="logout()" style="color:white"><span class="glyphicon glyphicon-off"></span> Logout</button>
                         </li>
                      </ul>
                   </div>
@@ -85,7 +85,11 @@
          <script>
          	var app = angular.module('myApp',[]);
          	app.controller('myCtrl', function($scope, $http){
-         		
+         		$scope.logout = function(){
+         			$http.get('/api/deleteSession').success(function(response){
+         				window.location.href="/";
+         			});
+         		};
          	});
          </script>
 	

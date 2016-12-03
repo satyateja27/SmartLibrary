@@ -47,18 +47,18 @@
                   <div class="container-fluid">
                      <ul class="nav navbar-nav">
                         <li class="nav-item">
-                           <a class="nav-link" href="/testing" style="color:white">Librarian Dashboard</a>
+                           <a class="nav-link" href="/librarianDashboard" style="color:white">Librarian Dashboard</a>
                         </li>
                         <li class="nav-item">
                            <a class="nav-link" href="/book/create"style="color:white">Create Book</a>
                         </li>
                         <li class="nav-item">
-                           <a class="nav-link" href="/book/librarianSearch" style="color:white">Search Books</a>
+                           <a class="nav-link" href="/librarianSearch" style="color:white">Search Books</a>
                         </li>
                      </ul>
                      <ul class="nav navbar-nav navbar-right">
                      	<li class="nav-item">
-                           <a class="nav-link" href="#" style="color:white"><span class="glyphicon glyphicon-off"></span> Logout</a>
+                           <button class="nav-link btn" ng-click="logout()" style="color:white"><span class="glyphicon glyphicon-off"></span> Logout</button>
                         </li>
                      </ul>
                   </div>
@@ -77,15 +77,15 @@
                          </select>
          			</div>
          			<div class="col-lg-2">
-         				<select class="form-control" ng-change="onOptionChange(createdBy)" ng-model="createdBy" required>
+         				<select class="form-control" ng-change="onCreateSearchChange(createdBy)" ng-model="createdBy" required>
                         	<option disabled value="">Created By</option>
-                            <option ng-repeat="option in createdSearchOptions" ng-value="option.value">{{option.name}}</option>
+                            <option ng-repeat="option in createdSearchOptions" ng-value="option.userId">{{option.firstName}}</option>
                          </select>
          			</div>
          			<div class="col-lg-2">
-         				<select class="form-control" ng-change="onOptionChange(updatedBy)" ng-model="UpdatedBy" required>
+         				<select class="form-control" ng-change="onUpdateSearchChange(updatedBy)" ng-model="updatedBy" required>
                         	<option disabled value="">Last Updated By</option>
-                            <option ng-repeat="option in updatedSearchOptions" ng-value="option.value">{{option.name}}</option>
+                            <option ng-repeat="option in updatedSearchOptions" ng-value="option.userId">{{option.firstName}}</option>
                          </select>
          			</div>	
          			<div class="col-lg-4"><input type="text" ng-model="searchContent" class="form-control"/></div>
@@ -129,11 +129,30 @@
          	app.controller('myCtrl', function($scope, $http, $window){
          		$scope.bookSearchOptions = [{'value': 'author', 'name': 'Author'}, {'value': 'title', 'name': 'Title'},
          		                          {'value': 'publisher', 'name': 'Publisher'}, {'value': 'publicationYear', 'name': 'Publication Year'}];
-         		var searchBy;
+         		$http.get("/api/user/findOtherLibrarian").then(function(response){
+         			$scope.createdSearchOptions = response.data.users;
+         			$scope.updatedSearchOptions = response.data.users;
+         		});
+         		var searchBy, createdBy, updatedBy;
          		$scope.onOptionChange = function(input){
-         			searchBy = input;
+         			searchBy = input;console.log(input);
+         		};
+         		$scope.onCreateSearchChange = function(input){
+         			createdBy = input;console.log(input);
+         		};
+         		$scope.onUpdateSearchChange = function(input){
+         			UpdatedBy = input;console.log(input);
          		};
          		$scope.search = function(searchContent){
+         			console.log(searchBy);
+         			console.log(createdBy);
+         			console.log(updatedBy);
+         			console.log(searchContent);
+         			if(searchContent == undefined){
+         				if(createdBy != undefined || updatedBy != undefined){
+         					console.log('No Content Only Created By or Updated By');
+         				}
+         			}
          			$http({
          				method:"GET",
          				url:'/api/book/search/'+searchBy,
@@ -160,6 +179,11 @@
          		$scope.edit = function(id){
          			window.location.href="/book/"+id+"/edit";
          			
+         		};
+         		$scope.logout = function(){
+         			$http.get('/api/deleteSession').success(function(response){
+         				window.location.href="/";
+         			});
          		};
          	});
          </script>
