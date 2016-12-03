@@ -18,7 +18,7 @@
 	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-	  <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.11/ngStorage.js"></script>
+	  <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.10/ngStorage.js"></script>
 
 	  <style>
 		table {
@@ -79,7 +79,7 @@
 	         				<th>Call Number</th>
 	         				<th>Publisher</th>
 	         				<th>Publication Year</th>
-
+							<th>Take them home</th>
 	         			</tr>
 	         			<tr ng-repeat="book in books">
 	         				<td>{{book.author}}</td>
@@ -92,7 +92,7 @@
 	         		</table>
          		</div><br/>
          	</div>
-         	<div class="col-sm-3">
+         	<div class="col-sm-3" style="border-color:#cccccc;border-style:solid; border-width:1px;">
          	<div ng-repeat="book in cart">
          	         {{book.author}}
                      {{book.title}}
@@ -106,17 +106,19 @@
          <script>
          	var app = angular.module('myApp',['ngStorage']);
          	app.controller('myCtrl', function($scope, $http,$localStorage){
-                 $localStorage.cart=[];
                  $scope.cart=[];
          		$scope.getAllBooks=function(){
          		        $http.get("/api/book/getAllBooks").then(function(response){
-         			     $scope.books = response.data.books;
+         			     console.log(response)
+         		        	$scope.books = response.books;
          		});
+         		}
          		$scope.Cart=function(book){
-                    if($localStorage.cart.length<=5){
+                    var length=$scope.cart.length;
+         			if($scope.cart.length<=5){
                     count=0;
-                    for(int i=0;i<$localStorage.cart.length;i++){
-                        if($localStorage.cart.book[i].title==book.title){
+                    for(var i=0;i<length;i++){
+                        if($scope.cart.book[i].title==book.title){
                             count++;
                         }
                     }
@@ -124,12 +126,13 @@
 
                     }
                     else{
-                    $localStorage.cart.push(book);
-                    $scope.cart=$localStorage.cart;
+                    $scope.cart.push(book);
+                    $localStorage.cart=$scope.cart;
                     }
                                         }
                     else{
                     $scope.message="You have exceeded the limit if you want to add more books please delete the previous books";
+         		}
          		}
          	});
 
