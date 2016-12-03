@@ -42,6 +42,11 @@ public class MainController {
 		return "SignUp";
 	}
 	
+	@GetMapping("/createBook")
+	public String createBook(HttpServletRequest request){
+		return "CreateBook";
+	}
+	
 	@GetMapping("/all-tasks")
 	public String allTasks(HttpServletRequest request){
 		request.setAttribute("tasks", taskService.findAll());
