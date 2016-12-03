@@ -11,6 +11,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
+
+import bootsample.model.*;
+import bootsample.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -41,16 +44,8 @@ import com.jayway.jsonpath.JsonPath;
 
 import bootsample.model.Book;
 import bootsample.model.User;
-import bootsample.service.BookService;
-
-import bootsample.model.Book;
-import bootsample.model.Transaction;
-import bootsample.model.User;
 import bootsample.requestdto.BookRequestDto;
 import bootsample.service.BookService;
-import bootsample.service.NotificationService;
-import bootsample.service.TransactionService;
-import bootsample.service.UserService;
 
 @RestController
 public class BookController {
@@ -63,8 +58,10 @@ public class BookController {
 	private BookService bookService;
 	@Autowired
 	private NotificationService notificationService;
+	@Autowired
+	private WaitingService waitService;
 
-	
+	HttpSession httpSession;
 	
 	@PostMapping("/api/book/add")
 	public ModelAndView addBook(@RequestBody Book book,HttpServletRequest request){
@@ -313,6 +310,33 @@ public class BookController {
 	public ModelAndView librarianSearchBook(){
 		return new ModelAndView("LibrarianSearch");
 	}
+
+	@PostMapping("api/book/waiting")
+	public ModelAndView waiting(@RequestBody List<Book> book){
+		ModelMap map = new ModelMap();
+		int userid=(int) httpSession.getAttribute("userId");
+		User user1=userService.findUser(userid);
+		for(int i=0;i<book.size();i++){
+			Waiting user = waitService.findUserById(userid,book.get(i).getBookId());
+			if(user==null){
+				Date date=transactionService.findBookwithDueDate(book.get(i).getBookId());
+				Waiting wait=new Waiting();
+				wait.setReservationFlag(false);
+				wait.setBookAvailableDate(date);
+				wait.setBook(book.get(i));
+				wait.setUser(user1);
+				waitService.save(wait);
+
+			}
+			else{
+				map.addAttribute("message", "The book is already wait listed by another user");
+				break;
+			}
+		}
+
+		return new ModelAndView(new MappingJackson2JsonView(),map);
+	}
+
 
 }
 

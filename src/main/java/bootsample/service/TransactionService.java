@@ -169,6 +169,8 @@ public class TransactionService {
 		}
 		return result;
 	}
-
+	public Date findBookwithDueDate(int bookid){
+		return TransactionRepository.findBookwithDueDate(bookid);
+	}
 }
 

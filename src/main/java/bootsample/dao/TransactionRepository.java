@@ -24,5 +24,7 @@ public interface TransactionRepository extends CrudRepository<Transaction, Integ
 	@Query(value = "UPDATE smartlibrary.transaction SET due=?1, return_date=?2, return_flag=1 WHERE transaction_id=?3'", nativeQuery = true)
 	void returnBook(int due, Date date, int tranid);
 
+	@Query(value="select return_date from smartlibrary.transaction where book_book_id=?",nativeQuery=true)
+	public Date findBookwithDueDate(int bookid);
 }
 
