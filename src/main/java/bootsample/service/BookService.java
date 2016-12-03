@@ -89,6 +89,18 @@ public class BookService {
 		return result;
 	}
 	
+	public List<Book> findBookByOtherAuthor(String author, int userId){
+		String newAuthor = author.toLowerCase();
+		List<Book> books = (List<Book>)bookRepository.findAll();
+		List<Book> result = new ArrayList<Book>();
+		for(Book book:books){
+			if(book.getAuthor().toLowerCase().contains(newAuthor)){
+				result.add(book);
+			}
+		}
+		return result;
+	}
+	
 	public List<Book> findBookByTitle(String title){
 		String newTitle = title.toLowerCase();
 		List<Book> books = (List<Book>)bookRepository.findAll();

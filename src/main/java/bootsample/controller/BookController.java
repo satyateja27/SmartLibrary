@@ -309,6 +309,15 @@ public class BookController {
 		map.addAttribute("books",bookService.findBookByPublicationYear(publicationYear));
 		return new ModelAndView(new MappingJackson2JsonView(),map);
 	}
+	
+	@GetMapping("/api/book/getByOtherLibrarian/search/author")
+	public ModelAndView getBooksByOtherAuthor(@RequestParam(value="author", required=true) String author,
+			@RequestParam(value="userId", required=true) int userId){
+		ModelMap map = new ModelMap();
+		map.addAttribute("books",bookService.findBookByOtherAuthor(author,userId));
+		return new ModelAndView(new MappingJackson2JsonView(),map);
+	}
+	
 	@GetMapping("/book/{bookId}/edit")
 	public ModelAndView getEditBook(@PathVariable(value="bookId") int bookId){
 		ModelMap map = new ModelMap();

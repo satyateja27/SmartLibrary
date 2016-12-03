@@ -99,15 +99,22 @@
          <script>
          	var app = angular.module('myApp',[]);
          	app.controller('myCtrl', function($scope, $http){
-         		$http.get("/api/book/getByLibrarian").then(function(response){
-         			$scope.books = response.data.books;
-         		});
+         		$http.get('/api/checkSession').success(function(response){
+    				if(response.message == 'absent'){
+    					window.location.href="/";
+    				}else{
+    					$http.get("/api/book/getByLibrarian").then(function(response){
+    	         			$scope.books = response.data.books;
+    	         		});
+    				}
+    			});
+         		$scope.logout = function(){
+         			$http.get('/api/deleteSession').success(function(response){
+         				window.location.href="/";
+         			});
+         		};
          	});
-         	$scope.logout = function(){
-     			$http.get('/api/deleteSession').success(function(response){
-     				window.location.href="/";
-     			});
-     		};
+         	
          </script>
 	
 </body>

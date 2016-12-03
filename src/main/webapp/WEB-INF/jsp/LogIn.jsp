@@ -87,8 +87,17 @@
 						
 					}
 				});
-			}
+			};
+			$http.get('/api/checkSession').success(function(response){
+				if(response.message == 'present'){
+					if(response.role === 'librarian'){
+						$window.location.href="/librarianDashboard";
+					}else{
+						$window.location.href="/userDashboard";
+					}
+				}
 			});
+		});
 		</script>
 	
 </body>

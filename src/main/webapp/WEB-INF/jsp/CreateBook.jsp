@@ -178,6 +178,11 @@ th {
 					$scope.author = data.author;
 				});
 			}
+			$http.get('/api/checkSession').success(function(response){
+				if(response.message == 'absent'){
+					$window.location.href="/";
+				}
+			});
 		});
 	</script>
 
