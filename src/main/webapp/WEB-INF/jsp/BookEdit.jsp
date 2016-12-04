@@ -89,12 +89,12 @@
          			$http.get('/api/deleteSession').success(function(response){
          				window.location.href="/";
          			});
-         			$http.get('/api/checkSession').success(function(response){
-        				if(response.message == 'absent'){
-        					$window.location.href="/";
-        				}
-        			});
          		};
+         		$http.get('/api/checkSession').success(function(response){
+    				if(response.message == 'absent'){
+    					window.location.href="/";
+    				}
+    			});
          	});
          </script>
 	

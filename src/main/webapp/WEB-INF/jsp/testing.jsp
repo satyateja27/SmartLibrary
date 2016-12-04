@@ -40,7 +40,7 @@
 	  
 </head>
 <body>
-	<div ng-app="myApp" ng-controller="myCtrl" ng-init="results=false; normalSearch=false; advancedSearch=false; deleted=false">
+	<div ng-app="myApp" ng-controller="myCtrl" ng-init="results=false; normalSearch=false; advancedSearch=false">
 	<div class = "panel panel-default">
             <div class = "panel-body bg-primary" style=" height:65px">
                <nav class="navbar navbar-light">
@@ -69,13 +69,6 @@
          	<div class="col-sm-1"></div>
          	<div class="col-sm-10">
          		<h1 class="row">Librarian Search</h1><br/><br/>
-         		<div class="row">
-         				<div class="col-lg-4"></div>
-						<div class="col-lg-3 alert alert-success alert-dismissable" ng-show="deleted">
-					    	<a href="/librarianSearch" class="close" data-dismiss="alert" aria-label="close">×</a>
-					   		<label style="text-align:center"><strong>Success !</strong> Book has been Deleted</label>
-				 		 </div>
-	 			</div><br/>
          		<div class="row">
 		         	<div class="col-lg-5" style="font-size:150%">Specify how do you want to Search the Book</div>
 		         	<div class="col-lg-3">
@@ -196,12 +189,7 @@
          				headers: {'Content-Type': 'application/json'}
          			}).success(function(response){
          				$scope.results = true;
-         				if(librarianAction === 'createdBy'){
-         					$scope.books = response.created;
-         				}else{
-         					$scope.books = response.edited;
-         				}
-         				
+         				$scope.books = response.created;
          			});
          		};
          		$scope.remove = function(id){
@@ -211,7 +199,7 @@
          				params: {bookId:id},
          	            headers : {'Content-Type': 'application/json'}
          			}).success(function(response){
-         				$scope.deleted = true;
+         				window.location.href="/book/librarianSearch";
          			});
          		};
          		$scope.edit = function(id){

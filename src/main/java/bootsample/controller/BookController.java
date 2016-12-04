@@ -98,7 +98,7 @@ public class BookController {
 		book.setYearOfPublication(publicationYear);
 		bookService.addBook(book);
 		map.addAttribute("message","Edit Successfull");
-		response.sendRedirect("/book/librarianSearch");
+		response.sendRedirect("/librarianSearch");
 	}
 	@GetMapping("/api/book/get")
 	public ModelAndView getBook(@RequestParam(value="bookId",required=true) int bookId){
@@ -271,7 +271,7 @@ public class BookController {
 	@GetMapping("/api/book/search/tag")
 	public ModelAndView getBooksByTag(@RequestParam(value="tagName",required=true) String tagName){
 		ModelMap map = new ModelMap();
-		map.addAttribute("book",bookService.findBookByTagName(tagName));
+		map.addAttribute("books",bookService.findBookByTagName(tagName));
 		return new ModelAndView(new MappingJackson2JsonView(),map);
 	}
 	

@@ -64,13 +64,5 @@ public class SampleRestController {
 		return new ModelAndView(new MappingJackson2JsonView(), map);		
 	}
 	*/
-	
-	@GetMapping("/testing")
-	public ModelAndView test(){
-		return new ModelAndView("CreateBook");		
-	}
-	
-	
-	
 
 }
