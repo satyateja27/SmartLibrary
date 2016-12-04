@@ -65,6 +65,7 @@ public class BookController {
 	
 	@PostMapping("/api/book/add")
 	public ModelAndView addBook(@RequestBody Book book,HttpServletRequest request){
+		System.out.println(book);
 		ModelMap map = new ModelMap();
 		User user = (User) request.getSession().getAttribute("user");
 		book.setCreatedUser(user);
@@ -134,7 +135,7 @@ public class BookController {
 		return new ModelAndView(new MappingJackson2JsonView(),map);
 	}
 
-	@GetMapping("/api/book/getBook")
+	@GetMapping("/api/book/getBookByIsbn")
 	public ModelAndView getBookByIsbn(@RequestParam(value = "isbn", required = true) String isbn) throws IOException {
 		ModelMap map = new ModelMap();
 		String bookUrl = "http://isbndb.com/api/v2/json/AI9PNP81/book/"+isbn;
@@ -310,14 +311,6 @@ public class BookController {
 		return new ModelAndView(new MappingJackson2JsonView(),map);
 	}
 	
-	@GetMapping("/api/book/getByOtherLibrarian/search/author")
-	public ModelAndView getBooksByOtherAuthor(@RequestParam(value="author", required=true) String author,
-			@RequestParam(value="userId", required=true) int userId){
-		ModelMap map = new ModelMap();
-		map.addAttribute("books",bookService.findBookByOtherAuthor(author,userId));
-		return new ModelAndView(new MappingJackson2JsonView(),map);
-	}
-	
 	@GetMapping("/book/{bookId}/edit")
 	public ModelAndView getEditBook(@PathVariable(value="bookId") int bookId){
 		ModelMap map = new ModelMap();
@@ -326,7 +319,7 @@ public class BookController {
 	}
 	
 
-	@PostMapping("api/book/waiting")
+	@PostMapping("/api/book/waiting")
 	public ModelAndView waiting(@RequestBody List<Book> book){
 		ModelMap map = new ModelMap();
 		int userid=(int) httpSession.getAttribute("userId");

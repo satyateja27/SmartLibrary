@@ -50,7 +50,7 @@
                            <a class="nav-link" href="/librarianDashboard" style="color:white">Librarian Dashboard</a>
                         </li>
                         <li class="nav-item">
-                           <a class="nav-link" href="/book/create"style="color:white">Create Book</a>
+                           <a class="nav-link" href="/createBook"style="color:white">Create Book</a>
                         </li>
                         <li class="nav-item">
                            <a class="nav-link" href="/librarianSearch" style="color:white">Search Books</a>

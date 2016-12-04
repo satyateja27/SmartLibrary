@@ -18,7 +18,7 @@
 	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
-<body ng-app="myApp" ng-controller="myCtrl">
+<body ng-app="myApp" ng-controller="myCtrl" ng-init="show=false">
 		<div >
 			<nav class="navbar navbar-dark bg-primary" style="padding:10px">
 				<h2 style="text-align:center"><b><span class="glyphicon glyphicon-book"></span> Smart Library</b></h2>
