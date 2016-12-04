@@ -61,6 +61,14 @@ public class MainController {
 	public ModelAndView librarianSearchBook(){
 		return new ModelAndView("LibrarianSearch");
 	}
+	@GetMapping("/patronDashboard")
+	public ModelAndView patronDashboard(){
+		return new ModelAndView("PatronDashboard");
+	}
+	@GetMapping("/patronSearch")
+	public ModelAndView patronSearch(){
+		return new ModelAndView("PatronSearch");
+	}
 	@GetMapping("/test")
 	public ModelAndView test(){
 		return new ModelAndView("PatronSearch");

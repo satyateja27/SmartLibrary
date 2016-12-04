@@ -11,7 +11,7 @@
     <meta http-equiv="Cache-Control" content="no-cache">
     <meta http-equiv="Expires" content="Sat, 01 Dec 2001 00:00:00 GMT">
 
-    <title>Librarian | Dashboard</title>
+    <title>Patron | Dashboard</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -54,12 +54,12 @@
                            <a class="nav-link" href="/book/create"style="color:white">Your books</a>
                         </li>
                         <li class="nav-item">
-                           <a class="nav-link" href="/book/PatronSearch" style="color:white">Search Books</a>
+                           <a class="nav-link" href="/patronSearch" style="color:white">Search Books</a>
                         </li>
                      </ul>
                      <ul class="nav navbar-nav navbar-right">
                      	<li class="nav-item">
-                           <a class="nav-link" href="#" style="color:white"><span class="glyphicon glyphicon-off"></span> Logout</a>
+                           <button class="nav-link btn" ng-click="logout()" style="color:white"><span class="glyphicon glyphicon-off"></span> Logout</button>
                         </li>
                      </ul>
                   </div>
@@ -112,7 +112,7 @@
          			     console.log(response)
          		        	$scope.books = response.books;
          		});
-         		}
+         		};
          		$scope.Cart=function(book){
                     var length=$scope.cart.length;
          			if($scope.cart.length<=5){
@@ -133,7 +133,17 @@
                     else{
                     $scope.message="You have exceeded the limit if you want to add more books please delete the previous books";
          		}
-         		}
+         		};
+         		$scope.logout = function(){
+         			$http.get('/api/deleteSession').success(function(response){
+         				window.location.href="/";
+         			});
+         		};
+         		$http.get('/api/checkSession').success(function(response){
+    				if(response.message == 'absent'){
+    					window.location.href="/";
+    				}
+    			});
          	});
 
          </script>

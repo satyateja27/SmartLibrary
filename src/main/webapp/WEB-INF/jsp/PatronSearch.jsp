@@ -40,25 +40,25 @@
 	  
 </head>
 <body>
-	<div ng-app="myApp" ng-controller="myCtrl" ng-init="show=true">
+	<div ng-app="myApp" ng-controller="myCtrl" ng-init="show=true; added=false">
 	<div class = "panel panel-default">
             <div class = "panel-body bg-primary" style=" height:65px">
                <nav class="navbar navbar-light">
                   <div class="container-fluid">
                      <ul class="nav navbar-nav">
                         <li class="nav-item">
-                           <a class="nav-link" href="/testing" style="color:white">Librarian Dashboard</a>
+                           <a class="nav-link" href="/patronDashboard" style="color:white">Patron Dashboard</a>
                         </li>
                         <li class="nav-item">
-                           <a class="nav-link" href="/book/create"style="color:white">Create Book</a>
+                           <a class="nav-link" href="/book/create"style="color:white">Your Book</a>
                         </li>
                         <li class="nav-item">
-                           <a class="nav-link" href="/book/librarianSearch" style="color:white">Search Books</a>
+                           <a class="nav-link" href="/patronSearch" style="color:white">Search Books</a>
                         </li>
                      </ul>
                      <ul class="nav navbar-nav navbar-right">
                      	<li class="nav-item">
-                           <a class="nav-link" href="#" style="color:white"><span class="glyphicon glyphicon-off"></span> Logout</a>
+                           <button class="nav-link btn" ng-click="logout()" style="color:white"><span class="glyphicon glyphicon-off"></span> Logout</button>
                         </li>
                      </ul>
                   </div>
@@ -68,7 +68,14 @@
          <div>
          	<div class="col-sm-1"></div>
          	<div class="col-sm-10">
-         		<h1 class="row">Librarian Search</h1><br/><br/>
+         		<h1 class="row">Patron Search</h1><br/><br/>
+         		<div class="row" ng-show="added">
+         				<div class="col-lg-4"></div>
+						<div class="col-lg-3 alert alert-success alert-dismissable">
+					    	<a href="/createBook" class="close" data-dismiss="alert" aria-label="close">×</a>
+					   		<label style="text-align:center"><strong>Success !</strong> Book has been Created</label>
+				 		 </div>
+	 			</div>
          		<div class="row">
          			<div class="col-lg-2">
          				<select class="form-control" ng-change="onOptionChange(searchBy)" ng-model="searchBy" required>
@@ -77,9 +84,8 @@
                          </select>
          			</div>	
          			<div class="col-lg-4"><input type="text" ng-model="searchContent" class="form-control"/></div>
-         			<div class="col-lg-2"><button class="btn btn-primary" ng-click="search(searchContent)">Search</button></div>
-         		</div>
-         		<br/>
+         			<div class="col-lg-2"><button class="btn btn-primary" ng-click="search()">Search</button></div>
+         		</div><br/>
          		<div class="row" ng-hide="show">
 	         		<h3>Search Results</h3>
 	         		<table>
@@ -114,34 +120,46 @@
          <script>
          	var app = angular.module('myApp',[]);
          	app.controller('myCtrl', function($scope, $http, $window){
-         		$scope.bookSearchOptions = [{'value': 'author', 'name': 'Author'}, {'value': 'title', 'name': 'Title'},
-         		                          {'value': 'publisher', 'name': 'Publisher'}, {'value': 'publicationYear', 'name': 'Publication Year'}];
+         		$scope.bookSearchOptions = [{'value':'author', 'name':'Author'}, {'value':'title', 'name':'Title'},
+         		                          {'value':'publisher', 'name':'Publisher'}, {'value':'publicationYear', 'name':'Publication Year'},
+         		                          {'value':'tag', 'name' :'Keywords'}];
          		var searchBy;
          		$scope.onOptionChange = function(input){
          			searchBy = input;
          		};
-         		$scope.search = function(searchContent){
+         		$scope.search = function(){
          			$http({
          				method:"GET",
          				url:'/api/book/search/'+searchBy,
-         				params: {author: searchContent,
-         					title: searchContent,
-         					publisher: searchContent,
-         					publicationYear: searchContent},
+         				params: {author: $scope.searchContent,
+         					title: $scope.searchContent,
+         					publisher: $scope.searchContent,
+         					publicationYear: $scope.searchContent,
+         					tagName: $scope.searchContent},
          	            headers : {'Content-Type': 'application/json'}
          			}).success(function(response){
          				$scope.show = false;
          				$scope.books = response.books;
          			});
          		};
+         		$scope.logout = function(){
+         			$http.get('/api/deleteSession').success(function(response){
+         				window.location.href="/";
+         			});
+         		};
+         		$http.get('/api/checkSession').success(function(response){
+    				if(response.message == 'absent'){
+    					window.location.href="/";
+    				}
+    			});
          		$scope.addCart = function(id){
          			$http({
          				method:"POST",
-         				url:'/api/book/delete',
+         				url:'',
          				params: {bookId:id},
          	            headers : {'Content-Type': 'application/json'}
          			}).success(function(response){
-         				window.location.href="/book/patronSearch";
+         				$scope.added = true;
          			});
          		};
          		

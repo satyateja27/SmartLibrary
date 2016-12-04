@@ -11,7 +11,7 @@
     <meta http-equiv="Cache-Control" content="no-cache"> 
     <meta http-equiv="Expires" content="Sat, 01 Dec 2001 00:00:00 GMT">
     
-    <title>Librarian | Create Book</title>
+    <title>Book | Create</title>
     
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -70,9 +70,9 @@
          	<div class="col-sm-10">
          		<h1>Create Book</h1><br/><br/>
          		<div>
-         			<div class="row">
+         			<div class="row" ng-show="created">
          				<div class="col-lg-4"></div>
-						<div class="col-lg-3 alert alert-success alert-dismissable" ng-show="created">
+						<div class="col-lg-3 alert alert-success alert-dismissable">
 					    	<a href="/createBook" class="close" data-dismiss="alert" aria-label="close">×</a>
 					   		<label style="text-align:center"><strong>Success !</strong> Book has been Created</label>
 				 		 </div>
