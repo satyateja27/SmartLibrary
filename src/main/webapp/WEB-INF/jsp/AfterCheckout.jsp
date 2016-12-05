@@ -70,34 +70,27 @@
          	<div class="col-sm-1"></div>
          	<div class="col-sm-10">
          		<div class="row">
-	         		<h3>Books in Cart</h3><br/>
+         			<h3>Transaction Successful</h3>
+	         		<h4>Transaction Details</h4><br/>
 	         		<table>
 	         			<tr>
 	         				<th>Author</th>
 	         				<th>Title</th>
-	         				<th>Call Number</th>
 	         				<th>Publisher</th>
 	         				<th>Publication Year</th>
-	         				<th>Available Copies</th>
-	         				<th>Operation</th>
+	         				<th>Due Date</th>
 	         			</tr>
 	         			<tr ng-repeat="book in books">
 	         				<td>{{book.author}}</td>
 	         				<td>{{book.title}}</td>
-	         				<td>{{book.callNumber}}</td>
 	         				<td>{{book.publisher}}</td>
 	         				<td>{{book.yearOfPublication}}</td>
-	         				<td>{{book.numberOfCopies}}</td>
-	         				<td><button class="btn" style="color:white;background-color:#f4426b" ng-click="remove(book)">Remove</button></td>
+	         				<td>{{dueDate}}</td>
 	         			</tr>
 	         		</table>
 	         		<br/>
 	         		
          		</div><br/>
-         		<div class="row" ng-show="checkout">
-	         			<div class="col-lg-4"></div>
-	         			<div class="col-lg-4"><button class="btn btn-primary form-control" ng-click="proceed()">Proceed to Checkout</button></div>
-	         	</div>
          	</div>
          	<div class="col-sm-1"></div>
          </div>
@@ -105,13 +98,8 @@
          <script>
          	var app = angular.module('myApp',['ngStorage']);
          	app.controller('myCtrl', function($scope, $http, $window, $localStorage){
-         		$scope.books = $localStorage.items;
-         		if($localStorage.items.length === 0){$scope.checkout=false}else{$scope.checkout=true};
-         		$scope.remove = function(book){
-         			var index = $localStorage.items.indexOf(book);
-         			$localStorage.items.splice(index,1);
-         			if($localStorage.items.length === 0){$scope.checkout=false}else{$scope.checkout=true};
-         		};
+         		$scope.books = $localStorage.transaction.books;
+         		$scope.dueDate = $localStorage.transaction.dueDate;
          		$scope.logout = function(){
          			$http.get('/api/deleteSession').success(function(response){
          				$localStorage.items = "";
@@ -123,26 +111,7 @@
     					window.location.href="/";
     				}
     			});
-         		$scope.proceed = function(){
-         			var bookids = [];
-         			for(var i=0; i<$localStorage.items.length; i++){
-         				bookids.push($localStorage.items[i].bookId);
-         			}
-         			$http({
-         				method:"POST",
-         				url: '/api/book/checkout',
-         				data: {book_id: bookids},
-         				header:{'Content-Type': 'application/json'}
-         			}).success(function(data){
-         				if(data.Message === 'Checkout successful'){
-         					$localStorage.transaction = data;
-         					console.log(data);
-         					console.log(data.books);
-         					$localStorage.items="";
-         					window.location.href = "/afterCheckout";
-         				}
-         			});
-         		};
+         		
          		
          	});
          </script>

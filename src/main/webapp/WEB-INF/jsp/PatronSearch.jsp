@@ -203,7 +203,6 @@
          				}	
          			};
          			$localStorage.items = $scope.cart;
-         			console.log($localStorage.items);
          		};
          		
          	});

@@ -156,17 +156,21 @@ public class BookController {
 		return new ModelAndView(new MappingJackson2JsonView(),map);
 	}
 
-	@PostMapping(value = "/api/book/checkout", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ModelAndView checkout(@RequestBody(required = true) BookRequestDto dto) throws IOException {
+	@PostMapping(value = "/api/book/checkout", produces = MediaType.APPLICATION_JSON_VALUE,consumes =MediaType.APPLICATION_JSON_VALUE)
+	public ModelAndView checkout(@RequestBody(required = true) BookRequestDto dto, HttpServletRequest request) throws IOException {
 		ModelMap map = new ModelMap();
+		System.out.println(dto.getBookid().toString());
 		int[] bookids = dto.getBookid();
-		int userid = dto.getUserid();
+		System.out.println(bookids.toString());
+		User user1 = (User)request.getSession().getAttribute("user");
+		int userid = user1.getUserId();
 		Map<String, Object> result = transactionService.beforecheckout(bookids, userid);
 		System.out.println("result from dtaabase is" + result.values());
 
 		int statuscode = (Integer) result.get("StatusCode");
 		int booksPerDay = (Integer) result.get("CountPerDay");
 		int booksPerUser = (Integer) result.get("CountPerUser");
+		List<Book> allBooks = (List<Book>)result.get("books");
 		String message = (String) result.get("Message");
 		if (statuscode == 200) {
 
@@ -175,10 +179,11 @@ public class BookController {
 			Date date = c.getTime();
 			java.sql.Date end_date = new java.sql.Date(date.getTime());
 			System.out.println("Congratulations!You have issued books, return date of book is" + end_date);
-			map.addAttribute("Due Date", end_date);
+			map.addAttribute("dueDate", end_date);
 			map.addAttribute("Message", message);
 			map.addAttribute("booksPerDay", booksPerDay);
 			map.addAttribute("booksPerUser", booksPerUser);
+			map.addAttribute("books", allBooks);
 			// need this for notification mail service
 			User user = userService.findUser(userid);
 			List<Book> books = new ArrayList<>();

@@ -69,6 +69,10 @@ public class MainController {
 	public ModelAndView patronSearch(){
 		return new ModelAndView("PatronSearch");
 	}
+	@GetMapping("/afterCheckout")
+	public ModelAndView afterCheckout(){
+		return new ModelAndView("AfterCheckout");
+	}
 	@GetMapping("/test")
 	public ModelAndView test(){
 		return new ModelAndView("Cart");

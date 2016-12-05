@@ -1,5 +1,6 @@
 package bootsample.service;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -67,21 +68,34 @@ public class TransactionService {
 				result.put("CountPerUser", countperUser);
 				return result;
 			} else {
-
+				List<Book> books = new ArrayList();
 				for (int bookid : bookids) {
 					checkout(bookid, userid, date);
+					reduceCount(bookid);
 					countperDay = countperDay + 1;
 					countperUser = countperUser + 1;
+					books.add(bookService.findOne(bookid));
 				}
 				result.put("StatusCode", 200);
 				result.put("Message", "Checkout successful");
 				result.put("CountPerDay", countperDay);
 				result.put("CountPerUser", countperUser);
+				result.put("books", books);
 				return result;
 			}
 
 		}
 
+	}
+	
+	public void reduceCount(int bookId){
+		Book book = bookService.findOne(bookId);
+		int number = book.getNumberOfCopies();
+		number = number - 1;
+		if(number == 0){
+			book.setStatus(false);
+		}
+		book.setNumberOfCopies(number);
 	}
 
 	public void checkout(int bookid, int userid, Date start_date) {
