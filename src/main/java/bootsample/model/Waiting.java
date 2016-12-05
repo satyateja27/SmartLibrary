@@ -19,15 +19,15 @@ public class Waiting implements Serializable{
 	private Book book;
 	@ManyToOne(targetEntity=User.class)
 	private User user;
-	private boolean reservationFlag;
+
 	private Date bookAvailableDate;
 	
 	public Waiting(){};
-	public Waiting(Book book, User user, boolean reservationFlag, Date bookAvailableDate) {
+	public Waiting(Book book, User user, Date bookAvailableDate) {
 		super();
 		this.book = book;
 		this.user = user;
-		this.reservationFlag = reservationFlag;
+	
 		this.bookAvailableDate = bookAvailableDate;
 	}
 	public int getWaitingId() {
@@ -47,12 +47,6 @@ public class Waiting implements Serializable{
 	}
 	public void setUser(User user) {
 		this.user = user;
-	}
-	public boolean isReservationFlag() {
-		return reservationFlag;
-	}
-	public void setReservationFlag(boolean reservationFlag) {
-		this.reservationFlag = reservationFlag;
 	}
 	public Date getBookAvailableDate() {
 		return bookAvailableDate;

@@ -324,30 +324,22 @@ public class BookController {
 	}
 	
 
-	@PostMapping("/api/book/waiting")
-	public ModelAndView waiting(@RequestBody List<Book> book){
+	@PostMapping(value="/api/book/waiting",produces = MediaType.APPLICATION_JSON_VALUE,consumes =MediaType.APPLICATION_JSON_VALUE)
+	public ModelAndView waiting(@RequestBody BookRequestDto dto, HttpServletRequest request){
 		ModelMap map = new ModelMap();
-		int userid=(int) httpSession.getAttribute("userId");
-		User user1=userService.findUser(userid);
-		for(int i=0;i<book.size();i++){
-			Waiting user = waitService.findUserById(userid,book.get(i).getBookId());
-			if(user==null){
-				Date date=transactionService.findBookwithDueDate(book.get(i).getBookId());
-				Waiting wait=new Waiting();
-				wait.setReservationFlag(false);
-				wait.setBookAvailableDate(date);
-				wait.setBook(book.get(i));
-				wait.setUser(user1);
-				waitService.save(wait);
-				map.addAttribute("messageSuccess","Waitlist Successfull" );
-
+		int[] bookids = dto.getBookid();
+		System.out.println(bookids[0]);
+		User user1 = (User)request.getSession().getAttribute("user");
+	Map<String, Object> result =waitService.waitlist(bookids,user1);
+	int statuscode=(int)result.get("statuscode");
+	List<Book> books=(List<Book>) result.get("books");
+			if(statuscode==200){
+				map.addAttribute("books",books);
+				map.addAttribute("message", "The books are waitlisted successfully");	
 			}
 			else{
-				map.addAttribute("message", "The book is already wait listed by you");
-				break;
-			}
-		}
-
+				map.addAttribute("message", "The book is already wait listed by you");				
+			}				
 		return new ModelAndView(new MappingJackson2JsonView(),map);
 	}
 

@@ -168,6 +168,7 @@
     				}
     			});
          		$scope.cart = [];
+         		$scope.cart.concat($localStorage.items);
          		$scope.addCart = function(book){
          			
          			var length = $scope.cart.length;
