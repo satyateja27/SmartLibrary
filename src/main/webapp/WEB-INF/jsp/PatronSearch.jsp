@@ -18,6 +18,7 @@
 	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	  <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.10/ngStorage.js"></script>
 	  
 	  <style>
 		table {
@@ -40,7 +41,7 @@
 	  
 </head>
 <body>
-	<div ng-app="myApp" ng-controller="myCtrl" ng-init="show=true; added=false">
+	<div ng-app="myApp" ng-controller="myCtrl" ng-init="show=true; added=false; limitExceed=false; alreadyExist=false">
 	<div class = "panel panel-default">
             <div class = "panel-body bg-primary" style=" height:65px">
                <nav class="navbar navbar-light">
@@ -69,11 +70,25 @@
          	<div class="col-sm-1"></div>
          	<div class="col-sm-10">
          		<h1 class="row">Patron Search</h1><br/><br/>
+         		<div class="row" ng-show="alreadyExist">
+         			<div class="col-lg-4"></div>
+					<div class="col-lg-4 alert alert-danger alert-dismissable">
+				    	<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+				   		<label style="text-align:center"><strong>Error !</strong> The book is already in cart</label>
+			 		 </div>
+	 		 	</div>
+	 		 	<div class="row" ng-show="limitExceeded">
+	 		 	<div class="col-lg-4"></div>
+					<div class="col-lg-4 alert alert-danger alert-dismissable">
+				    	<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+				   		<label style="text-align:center"><strong>Error !</strong> Your limit for Cart has Exceed 5</label>
+			 		 </div>
+	 		 	</div>
          		<div class="row" ng-show="added">
          				<div class="col-lg-4"></div>
-						<div class="col-lg-3 alert alert-success alert-dismissable">
+						<div class="col-lg-4 alert alert-success alert-dismissable">
 					    	<a href="/createBook" class="close" data-dismiss="alert" aria-label="close">×</a>
-					   		<label style="text-align:center"><strong>Success !</strong> Book has been Created</label>
+					   		<label style="text-align:center"><strong>Success !</strong> Book has been Added to Cart</label>
 				 		 </div>
 	 			</div>
          		<div class="row">
@@ -109,7 +124,7 @@
 	         				<td>{{book.numberOfCopies}}</td>
 	         				<td>{{book.createdUser.firstName}} {{book.createdUser.lastName}}</td>
 	         				<td>{{book.updatedUser.firstName}} {{book.updatedUser.lastName}}</td>
-	         				<td><button class="btn" style="background-color:#42f4b6" ng-click="addCart(book.bookId)">Add to Cart</button></td>	
+	         				<td><button class="btn" style="background-color:#42f4b6" ng-click="addCart(book)">Add to Cart</button></td>	
 	         			</tr>
 	         		</table>
          		</div><br/>
@@ -118,8 +133,8 @@
          </div>
          </div>
          <script>
-         	var app = angular.module('myApp',[]);
-         	app.controller('myCtrl', function($scope, $http, $window){
+         	var app = angular.module('myApp',['ngStorage']);
+         	app.controller('myCtrl', function($scope, $http, $window, $localStorage){
          		$scope.bookSearchOptions = [{'value':'author', 'name':'Author'}, {'value':'title', 'name':'Title'},
          		                          {'value':'publisher', 'name':'Publisher'}, {'value':'publicationYear', 'name':'Publication Year'},
          		                          {'value':'tag', 'name' :'Keywords'}];
@@ -152,15 +167,43 @@
     					window.location.href="/";
     				}
     			});
-         		$scope.addCart = function(id){
-         			$http({
-         				method:"POST",
-         				url:'',
-         				params: {bookId:id},
-         	            headers : {'Content-Type': 'application/json'}
-         			}).success(function(response){
+         		$scope.cart = [];
+         		$scope.addCart = function(book){
+         			
+         			var length = $scope.cart.length;
+         			var flag;
+         			console.log(length);
+         			if(length===0){
+         				$scope.cart.push(book);
          				$scope.added = true;
-         			});
+         			}else if(length>=5){
+         				$scope.added = false;
+         				$scope.alreadyExist = false;
+         				$scope.limitExceeded = true;        				
+         			}else{
+         				for(var i=0; i<length; i++){
+         					if($scope.cart[i].bookId === book.bookId){
+         						$scope.alreadyExist = true;
+         						$scope.added = false;
+         						$scope.limitExceeded = false;
+								flag = false;
+								break;
+                            }else{
+                            	flag = true;
+                            }	
+         				}
+         				if(flag == true){
+         					if(length<5){
+         						$scope.cart.push(book);
+                            	$scope.added = true;
+                            	$scope.alreadyExist = false;
+                 				$scope.limitExceeded = false;
+         					}
+         					
+         				}	
+         			};
+         			$localStorage.items = $scope.cart;
+         			console.log($localStorage.items);
          		};
          		
          	});

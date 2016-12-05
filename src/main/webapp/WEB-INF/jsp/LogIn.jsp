@@ -27,11 +27,11 @@
 		</div>
 		<div class="col-sm-4" style="text-align:center"></div>
 		<div class="col-sm-4" style="text-align:center">
-			<div >
-			<div class="alert alert-danger alert-dismissable" ng-show="error">
-	    	<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-	   		<strong>Error !</strong> Invalid Email/Password. Try again!
-	 		 </div>
+			<div class="row">
+				<div class="alert alert-danger alert-dismissable" ng-show="error">
+		    	<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+		   		<strong>Error !</strong> Invalid Email/Password. Try again!
+		 		 </div>
 	 		 </div>
 			<h3 >Log in to Smart Library</h3><br>
 			<div class="input-group">

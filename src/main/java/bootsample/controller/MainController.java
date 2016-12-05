@@ -71,6 +71,6 @@ public class MainController {
 	}
 	@GetMapping("/test")
 	public ModelAndView test(){
-		return new ModelAndView("PatronSearch");
+		return new ModelAndView("Cart");
 	}
 }

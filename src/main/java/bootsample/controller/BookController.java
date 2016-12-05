@@ -334,10 +334,11 @@ public class BookController {
 				wait.setBook(book.get(i));
 				wait.setUser(user1);
 				waitService.save(wait);
+				map.addAttribute("messageSuccess","Waitlist Successfull" );
 
 			}
 			else{
-				map.addAttribute("message", "The book is already wait listed by another user");
+				map.addAttribute("message", "The book is already wait listed by you");
 				break;
 			}
 		}
