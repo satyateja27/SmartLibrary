@@ -67,7 +67,11 @@
 				if(data.message.includes("Invalid")){
 					$scope.error = true;
 				}else {
-					$window.location.href = "/";
+					if(data.user.role === 'librarian'){
+						$window.location.href = "/librarianDashboard";
+					}else{
+						$window.location.href = "/patronDashboard";
+					}
 				}
 			});
 			}

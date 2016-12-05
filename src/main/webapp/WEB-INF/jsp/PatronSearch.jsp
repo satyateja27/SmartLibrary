@@ -51,15 +51,21 @@
                            <a class="nav-link" href="/patronDashboard" style="color:white">Patron Dashboard</a>
                         </li>
                         <li class="nav-item">
-                           <a class="nav-link" href="/book/create"style="color:white">Your Book</a>
+                           <a class="nav-link" href="/patronSearch" style="color:white">Search Books</a>
                         </li>
                         <li class="nav-item">
-                           <a class="nav-link" href="/patronSearch" style="color:white">Search Books</a>
+                           <a class="nav-link" href="/returnBook"style="color:white">Return Book</a>
                         </li>
                      </ul>
                      <ul class="nav navbar-nav navbar-right">
                      	<li class="nav-item">
-                           <button class="nav-link btn" ng-click="logout()" style="color:white"><span class="glyphicon glyphicon-off"></span> Logout</button>
+                           <a class="nav-link" href="#" style="color:white"> Hi, ${sessionScope.user.firstName}</a>
+                        </li>
+                     	<li class="nav-item">
+                           <a class="nav-link" href="/cart" style="color:white"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a>
+                        </li>
+                     	<li class="nav-item">
+                           <a class="nav-link btn" ng-click="logout()" style="color:white"><span class="glyphicon glyphicon-off"></span> Logout</a>
                         </li>
                      </ul>
                   </div>
@@ -77,20 +83,20 @@
 				   		<label style="text-align:center"><strong>Error !</strong> The book is already in cart</label>
 			 		 </div>
 	 		 	</div>
+	 		 	<div class="row" ng-show="added">
+         				<div class="col-lg-4"></div>
+						<div class="col-lg-4 alert alert-success alert-dismissable">
+					    	<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+					   		<label style="text-align:center"><strong>Success !</strong> Book has been Added to Cart</label>
+				 		 </div>
+	 			</div>
 	 		 	<div class="row" ng-show="limitExceeded">
-	 		 	<div class="col-lg-4"></div>
+	 		 		<div class="col-lg-4"></div>
 					<div class="col-lg-4 alert alert-danger alert-dismissable">
 				    	<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
 				   		<label style="text-align:center"><strong>Error !</strong> Your limit for Cart has Exceed 5</label>
 			 		 </div>
 	 		 	</div>
-         		<div class="row" ng-show="added">
-         				<div class="col-lg-4"></div>
-						<div class="col-lg-4 alert alert-success alert-dismissable">
-					    	<a href="/createBook" class="close" data-dismiss="alert" aria-label="close">×</a>
-					   		<label style="text-align:center"><strong>Success !</strong> Book has been Added to Cart</label>
-				 		 </div>
-	 			</div>
          		<div class="row">
          			<div class="col-lg-2">
          				<select class="form-control" ng-change="onOptionChange(searchBy)" ng-model="searchBy" required>
@@ -124,7 +130,8 @@
 	         				<td>{{book.numberOfCopies}}</td>
 	         				<td>{{book.createdUser.firstName}} {{book.createdUser.lastName}}</td>
 	         				<td>{{book.updatedUser.firstName}} {{book.updatedUser.lastName}}</td>
-	         				<td><button class="btn" style="background-color:#42f4b6" ng-click="addCart(book)">Add to Cart</button></td>	
+	         				<td><button class="btn" style="background-color:#42f4b6" ng-click="addCart(book)" ng-show="{{book.status}}">Add to Cart</button>
+	         					<button class="btn" style="background-color:#f48342" ng-click="addWaitList(book)" ng-hide="{{book.status}}">Add to Wait List</button></td>	
 	         			</tr>
 	         		</table>
          		</div><br/>
@@ -159,6 +166,7 @@
          		};
          		$scope.logout = function(){
          			$http.get('/api/deleteSession').success(function(response){
+         				$localStorage.items = "";
          				window.location.href="/";
          			});
          		};

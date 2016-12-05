@@ -73,8 +73,12 @@ public class MainController {
 	public ModelAndView afterCheckout(){
 		return new ModelAndView("AfterCheckout");
 	}
-	@GetMapping("/test")
-	public ModelAndView test(){
+	@GetMapping("/cart")
+	public ModelAndView cart(){
 		return new ModelAndView("Cart");
+	}
+	@GetMapping("/returnBook")
+	public ModelAndView returnBook(){
+		return new ModelAndView("ReturnBook");
 	}
 }
