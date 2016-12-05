@@ -82,7 +82,7 @@
 						if(data.role === 'librarian'){
 							$window.location.href="/librarianDashboard";
 						}else{
-							$window.location.href="/userDashboard";
+							$window.location.href="/patronDashboard";
 						};
 						
 					}

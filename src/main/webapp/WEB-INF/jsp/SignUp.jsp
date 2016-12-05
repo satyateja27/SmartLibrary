@@ -14,9 +14,9 @@
     <title>Smart Library | Login</title>
     
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular-animate.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular-animate.js"></script>
     <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.13.4.js"></script>
 </head>
 <body ng-app="myApp" ng-controller="myCtrl">
@@ -29,10 +29,10 @@
 		<div class="col-sm-4" style="text-align:center"></div>
 		<div class="col-sm-4" style="text-align:center">
 		<div >
-		<div class="alert alert-danger alert-dismissable" ng-show="error">
-    	<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-   		<strong>Error !</strong> {{message}}
- 		 </div>
+			<div class="alert alert-danger alert-dismissable" ng-show="error">
+	    	<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+	   		<strong>Error !</strong> {{message}}
+	 		 </div>
  		 </div>
 			<h3>Sign Up for Smart Library</h3>
 			<div><input type="text" class="form-control" placeholder="First Name" ng-model="firstName"><br></div>
@@ -41,25 +41,27 @@
 			<div><input type="email" class="form-control" placeholder="Email id" ng-model="email"><br></div>
 			<div><input type="password" class="form-control" placeholder="Password" ng-model="password"><br></div>
 			<div>
-			<h4 class="pull-left">Select the role:</h4>
-			</div>
-			<div class="btn-group">
+		         <select class="form-control" ng-model="role" required>
+	             	<option disabled value="">Select the Role</option>
+	                <option value="librarian">Librarian</option>
+	                <option value="patron">Patron</option>
+	             </select>
+	        </div>
+			<!-- <div class="btn-group">
             <label class="btn btn-primary" ng-model="role" btn-radio="'user'">User</label>
             <label class="btn btn-primary" ng-model="role" btn-radio="'librarian'">Librarian</label>
-    </div>
+    		</div> -->
 
 			<br>
 			<br>
 			<div><button type="button" ng-click="register()" class="btn btn-primary">SignUp</button></div>
 			<br>
 			<div><p>Already have an account?  <a href="/">Login here</a></p></div>
-			display {{role}}
 		</div>
 		<script type="text/javascript">
 
 		var app = angular.module('myApp',['ngAnimate', 'ui.bootstrap']);
 		app.controller('myCtrl', function ($scope, $http,$window) {
-			$scope.role='user';
 			$scope.register = function () {
 				console.log($scope.role);
 			var request = $http({	

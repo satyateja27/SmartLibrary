@@ -70,7 +70,7 @@ public class UserController {
 			userService.saveUser(user);
 			map.addAttribute("user",user);
 			map.addAttribute("message", "success");
-			request.getSession().invalidate();
+			//request.getSession().invalidate();
 			return new ModelAndView(new MappingJackson2JsonView(),map);
 		}else{
 			map.addAttribute("message", "Invalid Code, Try Again");

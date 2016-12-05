@@ -51,15 +51,21 @@
                            <a class="nav-link" href="/patronDashboard" style="color:white">Patron Dashboard</a>
                         </li>
                         <li class="nav-item">
-                           <a class="nav-link" href="/book/create"style="color:white">Your Book</a>
+                           <a class="nav-link" href="/patronSearch" style="color:white">Search Books</a>
                         </li>
                         <li class="nav-item">
-                           <a class="nav-link" href="/patronSearch" style="color:white">Search Books</a>
+                           <a class="nav-link" href="/returnBook"style="color:white">Return Book</a>
                         </li>
                      </ul>
                      <ul class="nav navbar-nav navbar-right">
                      	<li class="nav-item">
-                           <button class="nav-link btn" ng-click="logout()" style="color:white"><span class="glyphicon glyphicon-off"></span> Logout</button>
+                           <a class="nav-link" href="#" style="color:white"> Hi, ${sessionScope.user.firstName}</a>
+                        </li>
+                     	<li class="nav-item">
+                           <a class="nav-link" href="/cart" style="color:white"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a>
+                        </li>
+                     	<li class="nav-item">
+                           <a class="nav-link btn" ng-click="logout()" style="color:white"><span class="glyphicon glyphicon-off"></span> Logout</a>
                         </li>
                      </ul>
                   </div>
