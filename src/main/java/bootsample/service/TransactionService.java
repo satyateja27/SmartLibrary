@@ -7,6 +7,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 import javax.transaction.Transactional;
 
@@ -87,12 +88,12 @@ public class TransactionService {
 		}
 
 	}
-	
-	public void reduceCount(int bookId){
+
+	public void reduceCount(int bookId) {
 		Book book = bookService.findOne(bookId);
 		int number = book.getNumberOfCopies();
 		number = number - 1;
-		if(number == 0){
+		if (number == 0) {
 			book.setStatus(false);
 		}
 		book.setNumberOfCopies(number);
@@ -120,43 +121,63 @@ public class TransactionService {
 		return issuedBooks;
 	}
 
-	public Map<String, Object> returnBook(int tranid) {
+	public Map<String, Object> returnBook(int[] tranid) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		java.util.Date utilDate = new java.util.Date();
 		java.sql.Date returnDate = new java.sql.Date(utilDate.getTime());
 		DateTime todaysDate = new DateTime();
-		Transaction tran = TransactionRepository.findByTransactionId(tranid);
-		DateTime expectedDate = new DateTime(tran.getEndDate());
-		System.out.println("todays date" + todaysDate);
-		System.out.println("expected return date" + expectedDate);
-
-		int diffdays = Days.daysBetween(expectedDate.toLocalDate(), todaysDate.toLocalDate()).getDays();
-		System.out.println("diference days is" + diffdays);
-		Period p = new Period(expectedDate, todaysDate);
-		int hours = p.getHours();
 		int dueAmountToMultiply = 1;
-		int dueAmount = 0;
-		System.out.println("diference of hours is" + hours);
-		if (diffdays > 0) {
-			if (hours > 24) {
-				diffdays = diffdays + 1;
-				dueAmount = diffdays * dueAmountToMultiply;
+		int dueAmount[] = new int[tranid.length];
+
+		for (int i = 0; i < tranid.length; i++) {
+
+			Transaction tran = TransactionRepository.findByTransactionId(tranid[i]);
+			DateTime expectedDate = new DateTime(tran.getEndDate());
+			System.out.println("todays date" + todaysDate);
+			System.out.println("expected return date" + expectedDate);
+
+			int diffdays = Days.daysBetween(expectedDate.toLocalDate(), todaysDate.toLocalDate()).getDays();
+			System.out.println("diference days is" + diffdays);
+			Period p = new Period(expectedDate, todaysDate);
+			int hours = p.getHours();
+
+			System.out.println("diference of hours is" + hours);
+			if (diffdays > 0) {
+				if (hours > 24) {
+					diffdays = diffdays + 1;
+					dueAmount[i] = diffdays * dueAmountToMultiply;
+				} else {
+					dueAmount[i] = diffdays * dueAmountToMultiply;
+				}
+				System.out.println("dueamount" + dueAmount[i]);
 			} else {
-				dueAmount = diffdays * dueAmountToMultiply;
+				dueAmount[i] = 0;
+				System.out.println("dueamount" + dueAmount[i]);
 			}
-			System.out.println("dueamount" + dueAmount);
-		} else {
-			dueAmount = 0;
-			System.out.println("dueamount" + dueAmount);
+			tran.setDue(dueAmount[i]);
+			tran.setReturnDate(returnDate);
+			tran.setReturnFlag(true);
+			TransactionRepository.save(tran);
+			Book book = tran.getBook();
+			int bookid = book.getBookId();
+			increaseCount(bookid);
 		}
-		tran.setDue(dueAmount);
-		tran.setReturnDate(returnDate);
-		tran.setReturnFlag(true);
-		TransactionRepository.save(tran);
-		result.put("Due Amount", dueAmount);
+		int sum = IntStream.of(dueAmount).sum();
+		System.out.println("The sum is " + sum);
+		result.put("Due Amount", sum);
 		result.put("StatusCode", 200);
 
 		return result;
+	}
+
+	public void increaseCount(int bookId) {
+		Book book = bookService.findOne(bookId);
+		int number = book.getNumberOfCopies();
+		number = number + 1;
+		if (number > 0) {
+			book.setStatus(true);
+		}
+		book.setNumberOfCopies(number);
 	}
 
 	public Map<String, Object> extendBook(int tranid) {
@@ -183,8 +204,8 @@ public class TransactionService {
 		}
 		return result;
 	}
-	public Date findBookwithDueDate(int bookid){
+
+	public Date findBookwithDueDate(int bookid) {
 		return TransactionRepository.findBookwithDueDate(bookid);
 	}
 }
-

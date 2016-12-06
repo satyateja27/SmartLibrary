@@ -69,7 +69,7 @@ public class NotificationService {
 
 	}
 
-	public void returnNotification(User user, Book book, int dueAmount) throws MailException {
+	public void returnNotification(User user, List<Book> book, int dueAmount) throws MailException {
 
 		SimpleMailMessage message = new SimpleMailMessage();
 		Date today = new Date();
@@ -78,13 +78,21 @@ public class NotificationService {
 		message.setTo(user.getEmail());
 		message.setFrom("smartlibrarycmpe275@gmail.com");
 		message.setSubject("You have returned book");
+		String books = "";
+		int j;
+		for (int i = 0; i < book.size(); i++) {
+			j = i + 1;
 
+			books = books + j + ". Book ID:" + book.get(i).getBookId() + " \n   Book Name: " + book.get(i).getTitle()
+					+ "\n \n";
+
+		}
+		System.out.println("Book list in mail is" + books);
 		String name = user.getFirstName() + " " + user.getLastName();
 
 		message.setText("Dear " + name
-				+ ", \n\nThank you for visiting our library. \nYou have returned this book:\nBook ID: "
-				+ book.getBookId() + "\nBook Title: " + book.getTitle() + "\nOverdue amount for this book is: "
-				+ dueAmount + "$ " + "\nReturn Date is: " + todays
+				+ ", \n\nThank you for visiting our library. \nYou have returned this book(s):\n " + books
+				+ "\nOverdue amount for the book(S) is: " + dueAmount + "$ " + "\n Date books returned is: " + todays
 				+ "\n\nPlease visit again. \n \nThis is an automated Message from Smart library. Please Do not reply to this mail.");
 
 		javaMailSender.send(message);
