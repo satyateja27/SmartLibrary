@@ -129,13 +129,13 @@ public class BookController {
 	public ModelAndView deleteBook(@RequestParam(value = "bookId", required = true) int bookId) {
 		ModelMap map = new ModelMap();
 		List<Transaction> transactions = transactionService.findBookWithBookId(bookId);
-		if(transactions==null){
+		if(transactions.size() > 0 ){
 			map.addAttribute("status",500);
-			map.addAttribute("message","Unsucessful, Book is Checked Out");
-			return new ModelAndView(new MappingJackson2JsonView(),map);
-		}	
+			map.addAttribute("message","Book Checked out, Delete Unsuccesful");
+		}else{
 		bookService.deleteBookById(bookId);
 		map.addAttribute("message", "Delete Succesful");
+		}
 		return new ModelAndView(new MappingJackson2JsonView(), map);
 	}
 
