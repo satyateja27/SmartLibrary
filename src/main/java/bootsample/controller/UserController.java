@@ -70,6 +70,7 @@ public class UserController {
 			userService.saveUser(user);
 			map.addAttribute("user",user);
 			map.addAttribute("message", "success");
+			notificationService.sendWelcomeMessage(user);
 			//request.getSession().invalidate();
 			return new ModelAndView(new MappingJackson2JsonView(),map);
 		}else{

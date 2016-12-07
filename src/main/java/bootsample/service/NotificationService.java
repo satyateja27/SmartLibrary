@@ -133,5 +133,16 @@ public class NotificationService {
 		String saltStr = salt.toString();
 		return saltStr;
 	}
+	
+	public void sendWelcomeMessage(User user) throws MailException {
+
+		SimpleMailMessage message = new SimpleMailMessage();
+		System.out.println(message.toString());
+		message.setTo(user.getEmail());
+		message.setFrom("smartlibrarycmpe275@gmail.com");
+		message.setSubject("Hi "+user.getFirstName()+"! Welcome to Smart Library");
+		message.setText("Welcome to Smart Library, You have completed the account verification and Now you can use the services of "+user.getRole());
+		javaMailSender.send(message);
+	}
 
 }
