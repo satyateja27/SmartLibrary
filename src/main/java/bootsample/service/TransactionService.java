@@ -210,4 +210,8 @@ public class TransactionService {
 	public Date findBookwithDueDate(int bookid) {
 		return TransactionRepository.findBookwithDueDate(bookid);
 	}
+	
+	public List<Transaction> findBookWithBookId(int bookId){
+		return TransactionRepository.findBookByBookId(bookId);
+	}
 }

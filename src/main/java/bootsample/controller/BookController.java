@@ -128,10 +128,12 @@ public class BookController {
 	@PostMapping("/api/book/delete")
 	public ModelAndView deleteBook(@RequestParam(value = "bookId", required = true) int bookId) {
 		ModelMap map = new ModelMap();
-		/*
-		 * Should Implement the business logic to check if the book is rented
-		 * out to any patron,in that case delete is not possible.
-		 */
+		List<Transaction> transactions = transactionService.findBookWithBookId(bookId);
+		if(transactions==null){
+			map.addAttribute("status",500);
+			map.addAttribute("message","Unsucessful, Book is Checked Out");
+			return new ModelAndView(new MappingJackson2JsonView(),map);
+		}	
 		bookService.deleteBookById(bookId);
 		map.addAttribute("message", "Delete Succesful");
 		return new ModelAndView(new MappingJackson2JsonView(), map);
