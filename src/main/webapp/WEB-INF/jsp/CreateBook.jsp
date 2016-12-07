@@ -76,7 +76,7 @@
 					   		<label style="text-align:center"><strong>Success !</strong> Book has been Created</label>
 					   		
 				 		 </div>
-				 		 <br>
+				 		 <br><br>
 				 		 <button class="btn btn-primary" ng-click="pagerefresh()">Add More Books</button>
 	 				 </div>
          	<div class="col-sm-1"></div>
@@ -142,6 +142,9 @@
          			}
          		};
          		$scope.getIsbnBook = function(){
+         			$scope.author="";
+         			$scope.title="";
+         			$scope.publisher="";
          			$http({
          				method:"GET",
          				url:'/api/book/getBookByIsbn',
