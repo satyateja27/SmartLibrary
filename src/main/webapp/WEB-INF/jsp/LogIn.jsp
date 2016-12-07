@@ -79,7 +79,10 @@
 				request.success(function (data) {
 					if(data.message.includes("Error")){
 						$scope.error = true;
-					}else if(data.message.includes("verfied")){
+					}else if(data.message.includes("Invalid")){
+						$scope.error = true;
+					}
+					else if(data.message.includes("verfied")){
 						$window.location.href = "/approveUser";
 					}else{
 						if(data.role === 'librarian'){
