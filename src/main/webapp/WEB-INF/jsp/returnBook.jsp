@@ -11,7 +11,7 @@
     <meta http-equiv="Cache-Control" content="no-cache"> 
     <meta http-equiv="Expires" content="Sat, 01 Dec 2001 00:00:00 GMT">
     
-    <title>Book | Search</title>
+    <title>Book | Return</title>
     
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -41,7 +41,7 @@
 	  
 </head>
 <body>
-	<div ng-app="myApp" ng-controller="myCtrl" ng-init="">
+	<div ng-app="myApp" ng-controller="myCtrl" ng-init="getBookstoReturn()">
 	<div class = "panel panel-default">
             <div class = "panel-body bg-primary" style=" height:65px">
                <nav class="navbar navbar-light">
@@ -56,7 +56,7 @@
                         <li class="nav-item">
                            <a class="nav-link" href="/returnBook"style="color:white">Return Book</a>
                         </li>
-                         <li class="nav-item">
+                          <li class="nav-item">
                            <a class="nav-link" href="/reissueBook"style="color:white">Reissue Book</a>
                         </li>
                      </ul>
@@ -78,9 +78,9 @@
          <div>
          	<div class="col-sm-1"></div>
          	<div class="col-sm-10">
-         		<h3 style="text-align:center">Transaction Successful</h3>
-         		<div class="row">
-	         		<h4>Transaction Details</h4><br/>
+         		<h3 style="text-align:center">Your books </h3>
+         		<div class="row" ng-hide="booksReturnedFlag">
+	         		<h2>{{nobooks}}</h2>
 	         		<table>
 	         			<tr>
 	         				<th>Author</th>
@@ -88,18 +88,56 @@
 	         				<th>Publisher</th>
 	         				<th>Publication Year</th>
 	         				<th>Due Date</th>
+	         				<th>Return</th>
 	         			</tr>
 	         			<tr ng-repeat="book in books">
+	         				<td>{{book.book.author}}</td>
+	         				<td>{{book.book.title}}</td>
+	         				<td>{{book.book.publisher}}</td>
+	         				<td>{{book.book.yearOfPublication}}</td>
+	         				<td>{{book.endDate | date}}</td>
+	         				<td><input type="checkbox" ng-model="book.selected" style="background-color:#42f4b6"  ng-change="selectBook(book)" >Add to Return list</td>
+	         			
+	         				</tr>
+	         				
+	         		</table>
+	         		<br>
+	         			<div class="row">
+	         			<div class="col-lg-4"></div>
+	         			<div class="col-lg-4"><button class="btn btn-primary form-control" ng-click="returnBook()">Proceed to Return Books</button></div>
+	         	</div>
+	         		<br/>
+	         		
+         		</div>
+         		<div class="row" ng-hide="returnHistoryFlag">
+         		<h3>You have returned these books</h3>
+	         		<table>
+	         			<tr>
+	         				<th>Author</th>
+	         				<th>Title</th>
+	         				<th>Publisher</th>
+	         		
+	         				<th>Due Amount</th>
+	         				
+	         			</tr>
+	         			<tr ng-repeat="book in data.books">
 	         				<td>{{book.author}}</td>
 	         				<td>{{book.title}}</td>
 	         				<td>{{book.publisher}}</td>
-	         				<td>{{book.yearOfPublication}}</td>
-	         				<td>{{dueDate}}</td>
-	         			</tr>
+	         				
+	         				<td>{{data.DueAmount[$index]}}</td>
+	         				<td></td>
+	         				
+	         				</tr>
+	         				
 	         		</table>
+	         		<br>
+	         	
 	         		<br/>
 	         		
-         		</div><br/>
+         		</div>
+         		
+         		<br/>
          	</div>
          	<div class="col-sm-1"></div>
          </div>
@@ -107,11 +145,13 @@
          <script>
          	var app = angular.module('myApp',['ngStorage']);
          	app.controller('myCtrl', function($scope, $http, $window, $localStorage){
-         		$scope.books = $localStorage.transaction.books;
-         		$scope.dueDate = $localStorage.transaction.dueDate;
+         		$scope.booksReturnedFlag=false;
+         		$scope.returnHistoryFlag=true;
+         		$scope.returnbooks=[];
+         		$scope.disabled=
          		$scope.logout = function(){
          			$http.get('/api/deleteSession').success(function(response){
-         				$localStorage.items = "";
+         				$localStorage.items = "";       				
          				window.location.href="/";
          			});
          		};
@@ -120,8 +160,65 @@
     					window.location.href="/";
     				}
     			});
+         		$scope.getBookstoReturn=function(){
+         			$http.get('/api/book/getIssuedBook').success(function(response){
+         			
+         				if(response.status==200){
+         					console.log(response.books);
+         					console.log(response.books[0].book);
+         					$scope.books=response.books;
+         				}
+         				else{
+         					$scope.nobooks="no books are there to return";
+         				}
+         			})
+         		}
+         		$scope.selectBook=function(book){
+         			book.disabled=true;
+         			if(book.selected){ //If it is checked
+         		      
+         		      $scope.returnbooks.push(book.transactionId);
+         		     console.log("returnbooks"+$scope.returnbooks);
+         		   }
+         			else{
+         				
+         				var id=$scope.returnbooks.indexOf(book.transactionId);
+         				if(id>-1){
+         					$scope.returnbooks.splice(id,1);
+         				}
+         				console.log("returnbooks"+$scope.returnbooks);
+         				
+         			}
          		
-         		
+         		}
+         		$scope.returnBook=function(){
+         			if($scope.returnbooks.length==0){
+         				alert("Please select books to return");
+         			}
+         			else{
+         				
+         				$http({
+             				method:"POST",
+             				url: '/api/book/returnBook',
+             				data: {"transactionId":$scope.returnbooks},
+             				header:{'Content-Type': 'application/json'}
+             			}).success(function(data){
+             				if(data.status ==200){
+             					$scope.booksReturnedFlag=true;
+             					$scope.returnHistoryFlag=false;
+             					console.log(data);
+             					alert("Books Successfully Returned");
+             					$scope.data=data;
+             					
+             					
+             				}
+             				else{
+             					alert("Internal Error Occurred, couldnot return books please try again");
+             					$scope.getBookstoReturn();
+             				}
+             			});
+         			}
+         		}
          	});
          </script>
 	

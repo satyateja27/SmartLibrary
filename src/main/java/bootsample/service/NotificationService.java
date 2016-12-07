@@ -69,7 +69,7 @@ public class NotificationService {
 
 	}
 
-	public void returnNotification(User user, List<Book> book, int dueAmount) throws MailException {
+	public void returnNotification(User user, List<Book> book, int[] dueAmount) throws MailException {
 
 		SimpleMailMessage message = new SimpleMailMessage();
 		Date today = new Date();
@@ -84,7 +84,7 @@ public class NotificationService {
 			j = i + 1;
 
 			books = books + j + ". Book ID:" + book.get(i).getBookId() + " \n   Book Name: " + book.get(i).getTitle()
-					+ "\n \n";
+					+ "\n  Due Amount in $: " + dueAmount[i] + "\n \n";
 
 		}
 		System.out.println("Book list in mail is" + books);
@@ -92,7 +92,7 @@ public class NotificationService {
 
 		message.setText("Dear " + name
 				+ ", \n\nThank you for visiting our library. \nYou have returned this book(s):\n " + books
-				+ "\nOverdue amount for the book(S) is: " + dueAmount + "$ " + "\n Date books returned is: " + todays
+				+ "\n Date books returned is: " + todays
 				+ "\n\nPlease visit again. \n \nThis is an automated Message from Smart library. Please Do not reply to this mail.");
 
 		javaMailSender.send(message);

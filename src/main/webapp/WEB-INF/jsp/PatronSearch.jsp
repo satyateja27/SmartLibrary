@@ -130,8 +130,11 @@
 	         				<td>{{book.numberOfCopies}}</td>
 	         				<td>{{book.createdUser.firstName}} {{book.createdUser.lastName}}</td>
 	         				<td>{{book.updatedUser.firstName}} {{book.updatedUser.lastName}}</td>
-	         				<td><button class="btn" style="background-color:#42f4b6" ng-click="addCart(book)" ng-show="{{book.status}}">Add to Cart</button>
-	         					<button class="btn" style="background-color:#f48342" ng-click="addWaitList(book)" ng-hide="{{book.status}}">Add to Wait List</button></td>	
+	         				<td>
+	         				<div ng-if="{{book.book.numberofCopies}}!=0">
+	         				<button class="btn" style="background-color:#42f4b6" ng-click="addCart(book)" ng-show="{{book.status}}">Add to Cart</button></div>
+	         				<div ng-if="{{book.book.numberofCopies}}===0">
+	         					<button class="btn" style="background-color:#f48342" ng-click="addWaitList(book)">Add to Wait List</button></td>	
 	         			</tr>
 	         		</table>
          		</div><br/>

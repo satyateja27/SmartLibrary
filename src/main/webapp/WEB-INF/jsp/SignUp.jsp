@@ -35,11 +35,12 @@
 	 		 </div>
  		 </div>
 			<h3>Sign Up for Smart Library</h3>
-			<div><input type="text" class="form-control" placeholder="First Name" ng-model="firstName"><br></div>
-			<div><input type="text" class="form-control" placeholder="Last Name" ng-model="lastName"><br></div>
-			<div><input type="text" class="form-control" placeholder="University Id" ng-model="universityid"><br></div>
-			<div><input type="email" class="form-control" placeholder="Email id" ng-model="email"><br></div>
-			<div><input type="password" class="form-control" placeholder="Password" ng-model="password"><br></div>
+			<form ng-submit="register()" >
+			<div><input type="text" class="form-control" placeholder="First Name" ng-model="firstName" required><br></div>
+			<div><input type="text" class="form-control" placeholder="Last Name" ng-model="lastName" required><br></div>
+			<div><input type="text" class="form-control" placeholder="University Id" ng-model="universityid" required><br></div>
+			<div><input type="email" class="form-control" placeholder="Email id" ng-model="email" required><br></div>
+			<div><input type="password" class="form-control" placeholder="Password" ng-model="password" required><br></div>
 			<div>
 		         <select class="form-control" ng-model="role" required>
 	             	<option disabled value="">Select the Role</option>
@@ -54,8 +55,9 @@
 
 			<br>
 			<br>
-			<div><button type="button" ng-click="register()" class="btn btn-primary">SignUp</button></div>
+			<div><input type="submit"  value="SignUp" ng-disabled="registerbutton" class="btn btn-primary"></div>
 			<br>
+			</form>
 			<div><p>Already have an account?  <a href="/">Login here</a></p></div>
 		</div>
 		<script type="text/javascript">
@@ -63,6 +65,7 @@
 		var app = angular.module('myApp',['ngAnimate', 'ui.bootstrap']);
 		app.controller('myCtrl', function ($scope, $http,$window) {
 			$scope.register = function () {
+				$scope.registerbutton=true;
 				console.log($scope.role);
 			var request = $http({	
 			    method: "POST",

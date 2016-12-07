@@ -37,6 +37,7 @@ import bootsample.model.Book;
 import bootsample.model.Transaction;
 import bootsample.model.User;
 import bootsample.requestdto.BookRequestDto;
+import bootsample.requestdto.returnBookdto;
 import bootsample.service.BookService;
 import bootsample.service.NotificationService;
 import bootsample.service.TransactionService;
@@ -204,44 +205,48 @@ public class BookController {
 	}
 
 	@GetMapping(value = "/api/book/getIssuedBook")
-	public ModelAndView getIssuedBook(@RequestParam(value = "userid", required = true) int id) throws IOException {
+	public ModelAndView getIssuedBook(HttpServletRequest request) throws IOException {
 		ModelMap map = new ModelMap();
-
-		List<Transaction> result = transactionService.getIssuedBooks(id);
+		User user1 = (User) request.getSession().getAttribute("user");
+		int userid = user1.getUserId();
+		List<Transaction> result = transactionService.getIssuedBooks(userid);
 
 		if (result.isEmpty()) {
 			System.out.println("No Issued books for this user ");
+			map.addAttribute("status", 400);
 			map.addAttribute("Message", "No Books issued for this user");
 		} else {
 			System.out.println("result from database is" + result);
 			map.addAttribute("Message", "You have unreturned books");
-			map.addAttribute("Transaction", result);
+			map.addAttribute("status", 200);
+			map.addAttribute("books", result);
 
 		}
 		return new ModelAndView(new MappingJackson2JsonView(), map);
 	}
 
 	@PostMapping(value = "/api/book/returnBook", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ModelAndView returnBook(@RequestBody(required = true) int[] id) throws IOException {
+	public ModelAndView returnBook(@RequestBody(required = true) returnBookdto transactionId,
+			HttpServletRequest request) throws IOException {
 		ModelMap map = new ModelMap();
-
+		int[] id = transactionId.getTransactionId();
 		Map<String, Object> result = transactionService.returnBook(id);
 
 		int statuscode = (Integer) result.get("StatusCode");
-		int dueAmount = (Integer) result.get("Due Amount");
+		int[] dueAmount = (int[]) result.get("Due Amount");
+		User user = (User) request.getSession().getAttribute("user");
 
 		if (statuscode == 200) {
-			// remove this after implementing session, just need user details:
-			Transaction tranuser = transactionService.findTransaction(id[0]);
-			User user = tranuser.getUser();
+
 			List<Book> book = new ArrayList<Book>();
 			for (int i = 0; i < id.length; i++) {
 				Transaction tran = transactionService.findTransaction(id[i]);
 				book.add(tran.getBook());
 			}
-
+			map.addAttribute("status", 200);
 			map.addAttribute("Message", "You have returned this book");
-			map.addAttribute("Due Amount in dollors", dueAmount);
+			map.addAttribute("DueAmount", dueAmount);
+			map.addAttribute("books", book);
 
 			notificationService.returnNotification(user, book, dueAmount);
 		} else {
@@ -253,7 +258,7 @@ public class BookController {
 	@PostMapping(value = "/api/book/extendBook")
 	public ModelAndView extendBook(@RequestParam(value = "transactionid", required = true) int id) throws IOException {
 		ModelMap map = new ModelMap();
-
+		System.out.println(id);
 		Map<String, Object> result = transactionService.extendBook(id);
 		String message = (String) result.get("Message");
 		int statuscode = (Integer) result.get("StatusCode");
@@ -265,7 +270,10 @@ public class BookController {
 			Date end_date = (Date) result.get("Due Date");
 			map.addAttribute("Due Date", end_date);
 			int extended_times = (Integer) result.get("Extented times");
-			map.addAttribute("Extended times", extended_times);
+			map.addAttribute("extended", extended_times);
+			map.addAttribute("Book", book);
+			map.addAttribute("duedate", end_date);
+			map.addAttribute("status", statuscode);
 			notificationService.extendBookNotification(user, book, end_date);
 		} else {
 			System.out.println("could not reissue book");

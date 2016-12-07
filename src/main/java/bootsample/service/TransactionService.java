@@ -7,7 +7,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 import javax.transaction.Transactional;
 
@@ -162,9 +161,9 @@ public class TransactionService {
 			int bookid = book.getBookId();
 			increaseCount(bookid);
 		}
-		int sum = IntStream.of(dueAmount).sum();
-		System.out.println("The sum is " + sum);
-		result.put("Due Amount", sum);
+		// int sum = IntStream.of(dueAmount).sum();
+		// System.out.println("The sum is " + sum);
+		result.put("Due Amount", dueAmount);
 		result.put("StatusCode", 200);
 
 		return result;
@@ -190,10 +189,13 @@ public class TransactionService {
 			result.put("StatusCode", 400);
 		} else {
 			extention_number = extention_number + 1;
+			Date date1 = tran.getEndDate();
 			Calendar c = new GregorianCalendar();
+			c.setTime(date1);
 			c.add(Calendar.DATE, 30);
 			Date date = c.getTime();
 			java.sql.Date end_date = new java.sql.Date(date.getTime());
+			System.out.println("Date is" + end_date);
 			tran.setEndDate(end_date);
 			tran.setExtentionNumber(extention_number);
 			TransactionRepository.save(tran);
