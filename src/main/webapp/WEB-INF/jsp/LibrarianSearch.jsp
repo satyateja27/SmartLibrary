@@ -214,8 +214,12 @@
          				params: {bookId:id},
          	            headers : {'Content-Type': 'application/json'}
          			}).success(function(response){
+         				if(response.status==500){
+         					alert(response.message)
+         				}else{
          				$scope.deleted = true;
          				$scope.results=false;
+         				}
          			});
          		};
          		$scope.edit = function(id){

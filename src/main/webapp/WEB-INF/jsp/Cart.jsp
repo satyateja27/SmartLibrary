@@ -105,7 +105,7 @@
          		</div><br/>
          		<div class="row" ng-show="checkout">
 	         			<div class="col-lg-4"></div>
-	         			<div class="col-lg-4"><button class="btn btn-primary form-control" ng-click="proceed()">Proceed to Checkout</button></div>
+	         			<div class="col-lg-4"><input type="submit" class="btn btn-primary form-control" value="Proceed to Checkout" ng-click="proceed()"></button></div>
 	         	</div>
          	</div>
          	<div class="col-sm-1"></div>
