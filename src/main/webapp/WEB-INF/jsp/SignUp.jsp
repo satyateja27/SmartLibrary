@@ -36,10 +36,10 @@
  		 </div>
 			<h3>Sign Up for Smart Library</h3>
 			<form ng-submit="register()" >
-			<div><input type="text" class="form-control" placeholder="First Name" ng-model="firstName" required><br></div>
-			<div><input type="text" class="form-control" placeholder="Last Name" ng-model="lastName" required><br></div>
-			<div><input type="text" class="form-control" placeholder="University Id" ng-model="universityid" required><br></div>
-			<div><input type="email" class="form-control" placeholder="Email id" ng-model="email" required><br></div>
+			<div><input type="text" class="form-control" placeholder="First Name" ng-model="firstName" required pattern="[A-Za-z]{20}"><br></div>
+			<div><input type="text" class="form-control" placeholder="Last Name" ng-model="lastName" required pattern="[A-Za-z]{20}"><br></div>
+			<div><input type="text" class="form-control" placeholder="University Id" ng-model="universityid" required pattern="[0-9]{20}"><br></div>
+			<div><input type="email" class="form-control" placeholder="Email id" ng-model="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{1,}$"><br></div>
 			<div><input type="password" class="form-control" placeholder="Password" ng-model="password" required><br></div>
 			<div>
 		         <select class="form-control" ng-model="role" required>
