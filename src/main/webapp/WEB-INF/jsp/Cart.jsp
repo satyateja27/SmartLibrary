@@ -56,6 +56,9 @@
                         <li class="nav-item">
                            <a class="nav-link" href="/returnBook"style="color:white">Return Book</a>
                         </li>
+                         <li class="nav-item">
+                           <a class="nav-link" href="/reissueBook"style="color:white">Reissue Book</a>
+                        </li>
                      </ul>
                      <ul class="nav navbar-nav navbar-right">
                      	<li class="nav-item">

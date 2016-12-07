@@ -69,17 +69,21 @@
             </div>
          </div>
          <div>
-         	<div class="col-sm-1"></div>
-         	<div class="col-sm-10">
-         		<h1>Create Book</h1><br/><br/>
-         		<div>
-         			<div class="row" ng-show="created">
+         	<div class="row" ng-show="created">
          				<div class="col-lg-4"></div>
 						<div class="col-lg-3 alert alert-success alert-dismissable">
 					    	<a href="/createBook" class="close" data-dismiss="alert" aria-label="close">×</a>
 					   		<label style="text-align:center"><strong>Success !</strong> Book has been Created</label>
+					   		
 				 		 </div>
+				 		 <br>
+				 		 <button class="btn btn-primary" ng-click="pagerefresh()">Add More Books</button>
 	 				 </div>
+         	<div class="col-sm-1"></div>
+         	<div class="col-sm-10" ng-hide="bookcreated">
+         		<h1>Create Book</h1><br/><br/>
+         		<div>
+         		
 	         		<div class="row">
 		         		<div class="col-lg-5" style="font-size:150%">Specify how do you want to create the Book</div>
 		         		<div class="col-lg-2">
@@ -90,23 +94,28 @@
 	                         </select>
 	                    </div>   
 	         		</div><br/>
+	         			         		<form ng-submit="createBook()" name="myForm" >
 	         		<div class="row" ng-hide="show">
-	         			<div class="col-lg-3"><input type="text" class="form-control" placeholder="Enter ISBN" ng-model="isbnValue"/></div>
+	         			<div class="col-lg-3"><input type="text" class="form-control" placeholder="Enter ISBN" ng-model="isbnValue" required pattern=".{10}"/></div>
 	         			<div class="col-lg-2"><button class="btn btn-primary" ng-click="getIsbnBook()">Get Book Details</button></div>
 	         		</div><br/>
 	         		<div class="row col-lg-4">
-	         			<input type="text" class="form-control" placeholder="Author" ng-model="author"/><br/>
-	         			<input type="text" class="form-control" placeholder="Title" ng-model="title"/><br/>
-	         			<input type="text" class="form-control" placeholder="Publisher" ng-model="publisher"/><br/>
-	         			<input type="text" class="form-control" placeholder="Year of Publication" ng-model="yearOfPublication"/><br/>
-	         			<input type="text" class="form-control" placeholder="Number of Copies" ng-model="numberOfCopies"/><br/>
-	         			<input type="text" class="form-control" placeholder="Call Number" ng-model="callNumber"><br/>
-	         			<input type="text" class="form-control" placeholder="Location" ng-model="location"><br/>
-	         			<input type="text" class="form-control" placeholder="Keyword 1" ng-model="keyword1"/><br/>
+	         	
+	         			<input type="text"  name= "author" class="form-control" placeholder="Author" ng-model="author" required	/>
+	         			<br>
+	         			<input type="text" class="form-control" placeholder="Title" ng-model="title" required/><br/>
+	         			<input type="text" class="form-control" placeholder="Publisher" ng-model="publisher" required/><br/>
+	         			<input type="text" class="form-control" placeholder="Year of Publication" ng-model="yearOfPublication" required/><br/>
+	         			<input type="text" class="form-control" placeholder="Number of Copies" ng-model="numberOfCopies" required/><br/>
+	         			<input type="text" class="form-control" placeholder="Call Number" ng-model="callNumber" required><br/>
+	         			<input type="text" class="form-control" placeholder="Location" ng-model="location" required><br/>
+	         			<input type="text" class="form-control" placeholder="Keyword 1" ng-model="keyword1" required/><br/>
 	         			<input type="text" class="form-control" placeholder="Keyword 2" ng-model="keyword2"/><br/>
 	         			<input type="text" class="form-control" placeholder="Keyword 3" ng-model="keyword3"/><br/>
-	         			<button type="button" class="btn btn-primary" ng-click="createBook()">Add Book</button>
+	         			<input type="submit" class="btn btn-primary" value="Add Book"></button>
+	         			</form>
 	         		</div><br/>
+	         		
          		</div><br/>
          	</div>
          	<div class="col-sm-1"></div>
@@ -115,6 +124,8 @@
          <script>
          	var app = angular.module('myApp',[]);
          	app.controller('myCtrl', function($scope, $http){
+         		$scope.created = false;
+ 				$scope.bookcreated=false;
          		$http.get('/api/checkSession').success(function(response){
     				if(response.message == 'absent'){
     					window.location.href="/";
@@ -137,11 +148,19 @@
          				params: {isbn: $scope.isbnValue},
          	            headers : {'Content-Type': 'application/json'}
          			}).success(function(response){
+         				
          				$scope.author = response.author;
          				$scope.title = response.title;
          				$scope.publisher = response.publisher;
+         			}).error(function(response){
+         				
+         				alert("Please enter a valid ISBN");
          			});
          		};
+         		$scope.pagerefresh=function(){
+         			window.location.reload();
+         			
+         		}
          		$scope.createBook = function(){
          			var copies = parseInt($scope.numberOfCopies);
          			var year = parseInt($scope.yearOfPublication);
@@ -160,6 +179,7 @@
          	            headers : {'Content-Type': 'application/json'}
          			}).success(function(response){
          				$scope.created = true;
+         				$scope.bookcreated=true;
          			});
          		};
          	});

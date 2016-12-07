@@ -215,6 +215,7 @@
          	            headers : {'Content-Type': 'application/json'}
          			}).success(function(response){
          				$scope.deleted = true;
+         				$scope.results=false;
          			});
          		};
          		$scope.edit = function(id){

@@ -36,10 +36,10 @@
  		 </div>
 			<h3>Sign Up for Smart Library</h3>
 			<form ng-submit="register()" >
-			<div><input type="text" class="form-control" placeholder="First Name" ng-model="firstName" required pattern="[A-Za-z]{20}"><br></div>
-			<div><input type="text" class="form-control" placeholder="Last Name" ng-model="lastName" required pattern="[A-Za-z]{20}"><br></div>
-			<div><input type="text" class="form-control" placeholder="University Id" ng-model="universityid" required pattern="[0-9]{20}"><br></div>
-			<div><input type="email" class="form-control" placeholder="Email id" ng-model="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{1,}$"><br></div>
+			<div><input type="text" class="form-control" placeholder="First Name" ng-model="firstName" pattern="[A-Za-z].{1,}" title="Please enter only alphabets" required ><br></div>
+			<div><input type="text" class="form-control" placeholder="Last Name" ng-model="lastName" required pattern="[A-Za-z].{1,}" title="Please enter only alphabets"><br></div>
+			<div><input type="text" class="form-control" placeholder="University Id" ng-model="universityid" required pattern="[0-9]{6}" title="Please enter 6 Digit UID"><br></div>
+			<div><input type="email" class="form-control" placeholder="Email id" ng-model="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{1,}$" title="Please enter correct Email"><br></div>
 			<div><input type="password" class="form-control" placeholder="Password" ng-model="password" required><br></div>
 			<div>
 		         <select class="form-control" ng-model="role" required>
@@ -55,7 +55,7 @@
 
 			<br>
 			<br>
-			<div><input type="submit"  value="SignUp" ng-disabled="registerbutton" class="btn btn-primary"></div>
+			<div><input type="submit"  value="SignUp"  class="btn btn-primary"></div>
 			<br>
 			</form>
 			<div><p>Already have an account?  <a href="/">Login here</a></p></div>
@@ -65,7 +65,7 @@
 		var app = angular.module('myApp',['ngAnimate', 'ui.bootstrap']);
 		app.controller('myCtrl', function ($scope, $http,$window) {
 			$scope.register = function () {
-				$scope.registerbutton=true;
+				//$scope.registerbutton=true;
 				console.log($scope.role);
 			var request = $http({	
 			    method: "POST",
