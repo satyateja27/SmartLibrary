@@ -65,6 +65,7 @@
 		var app = angular.module('myApp',[]);
 		app.controller('myCtrl', function ($scope, $http,$window) {
 			$scope.login = function () {
+				console.log('Hello');
 				var payload = new FormData();
 				payload.append("email",$scope.email);
 				payload.append("password",$scope.password);
