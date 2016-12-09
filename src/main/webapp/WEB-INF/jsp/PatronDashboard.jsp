@@ -88,6 +88,7 @@
 	         				<th>Call Number</th>
 	         				<th>Publisher</th>
 	         				<th>Publication Year</th>
+	         				<th>Reservation Status</th>
 	         			</tr>
 	         			<tr ng-repeat="item in waiting">
 	         				<td>{{item.book.author}}</td>
@@ -95,6 +96,8 @@
 	         				<td>{{item.book.callNumber}}</td>
 	         				<td>{{item.book.publisher}}</td>
 	         				<td>{{item.book.yearOfPublication}}</td>
+	         				<td><label ng-show="item.reservationFlag" style="color:green">Reserved For You</label>
+	         				<label ng-hide="item.reservationFlag" style="color:red">Waiting For Book</label></td>
 	         			</tr>
 	         		</table>
          		</div><br/>

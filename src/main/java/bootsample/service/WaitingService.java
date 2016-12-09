@@ -84,6 +84,13 @@ public class WaitingService {
 		return WaitingRepository.findUserwaiting(bookId);
 	}
 	
+	public boolean checkBookWaiting(int bookId){
+		List<Waiting> waiting = WaitingRepository.isBookWaiting(bookId);
+		if(waiting.size()>0){
+			return true;
+		}else{return false;}
+	}
+	
 	public void deleteUserwaiting(int bookId){
 		WaitingRepository.deleteUserwaiting(bookId);
 	}

@@ -97,24 +97,21 @@
 	         				<td>{{book.book.yearOfPublication}}</td>
 	         				<td>{{book.endDate | date}}</td>
 	         				<td><button class="btn" style="color:white;background-color:#f4426b" ng-click="reissuebook(book)" ng-disabled="book.disabled">Reissue</button></td>
-	         			
-	         				</tr>
+	         			</tr>
 	         				
 	         		</table>
 	         		
 	         		
          		</div>
          		<div class="row" ng-hide="reissued">
-         		<h3>Your book has been reissued</h3>
+         		<h3>Following book has been reissued</h3>
 	         		<table>
 	         			<tr>
 	         				<th>Author</th>
 	         				<th>Title</th>
 	         				<th>Publisher</th>
-	         		
 	         				<th>New Due Date is</th>
 	         				<th>Extended Times</th>
-	         				
 	         			</tr>
 	         			<tr >
 	         				<td>{{data.Book.author}}</td>
@@ -122,9 +119,7 @@
 	         				<td>{{data.Book.publisher}}</td>	         				
 	         				<td>{{data.duedate}}</td>
 	         				<td>{{data.extended}}</td>
-	         				<td></td>
-	         				
-	         				</tr>      				
+	         			</tr>      				
 	         				
 	         		</table>
 	         		<div class="row">

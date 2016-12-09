@@ -79,6 +79,13 @@
          	<div class="col-sm-1"></div>
          	<div class="col-sm-10">
          		<h1 class="row">Patron Search</h1><br/><br/>
+         		<div class="row" ng-show="eligibility">
+         			<div class="col-lg-4"></div>
+					<div class="col-lg-4 alert alert-danger alert-dismissable">
+				    	<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+				   		<label style="text-align:center"><strong>Error !</strong> The book is already reserved for someother Patron</label>
+			 		 </div>
+	 		 	</div>
          		<div class="row" ng-show="alreadyExist">
          			<div class="col-lg-4"></div>
 					<div class="col-lg-4 alert alert-danger alert-dismissable">
@@ -86,6 +93,20 @@
 				   		<label style="text-align:center"><strong>Error !</strong> The book is already in cart</label>
 			 		 </div>
 	 		 	</div>
+	 		 	<div class="row" ng-show="waitError">
+         			<div class="col-lg-4"></div>
+					<div class="col-lg-4 alert alert-danger alert-dismissable">
+				    	<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+				   		<label style="text-align:center"><strong>Error !</strong> The book is already Wait Listed by You</label>
+			 		 </div>
+	 		 	</div>
+	 		 	<div class="row" ng-show="waitList">
+         				<div class="col-lg-4"></div>
+						<div class="col-lg-4 alert alert-success alert-dismissable">
+					    	<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+					   		<label style="text-align:center"><strong>Success !</strong> You has been added to Book's Waitlist</label>
+				 		 </div>
+	 			</div>
 	 		 	<div class="row" ng-show="added">
          				<div class="col-lg-4"></div>
 						<div class="col-lg-4 alert alert-success alert-dismissable">
@@ -188,65 +209,70 @@
          		$scope.cart=$localStorage.items;
          		}
          		$scope.addWaitList = function(book){
+         			console.log(book.bookId);
          			$http({
          				method:'POST',
-         				url:'',
-         				params:{book_id:book.Id},
+         				url:'/api/book/waiting',
+         				params:{book_id:book.bookId},
          				headers : {'Content-Type': 'application/json'}
          			}).success(function(data){
-         				if(data.message = "Success"){
-         					window.location.href="/patronDashboard";
+         				if(data.message.includes("successfully")){
+         					$scope.waitError = false;
+         					$scope.waitList = true;
+         				}else{
+         					$scope.waitList = false;
+         					$scope.waitError = true;
          				}
          			});
          		};
          		$scope.addCart = function(book){
          			
-         			var length = $scope.cart.length;
-         			var flag;
-         			console.log(length);
-         			if(length===0){
-         				$scope.cart.push(book);
-         				$scope.added = true;
-         			}else if(length>=5){
-         				$scope.added = false;
-         				$scope.alreadyExist = false;
-         				$scope.limitExceeded = true;        				
-         			}else{
-         				for(var i=0; i<length; i++){
-         					if($scope.cart[i].bookId === book.bookId){
-         						$scope.alreadyExist = true;
-         						$scope.added = false;
-         						$scope.limitExceeded = false;
-								flag = false;
-								break;
-                            }else{
-                            	flag = true;
-                            }	
-         				}
-         				if(flag == true){
-         					if(length<5){
-         						$scope.cart.push(book);
-                            	$scope.added = true;
-                            	$scope.alreadyExist = false;
-                 				$scope.limitExceeded = false;
-         					}
-         					
-         				}	
-         			};
-         			$localStorage.items = $scope.cart;
+         			$http({
+         				method:'GET',
+         				url:'/api/book/checkUserEligibility',
+         				params:{bookId:book.bookId},
+         				headers : {'Content-Type': 'application/json'}
+         			}).success(function(data){
+         				if(data.message.includes("Success")){
+         					$scope.eligibility = false;
+         					var length = $scope.cart.length;
+                 			var flag;
+                 			console.log(length);
+                 			if(length===0){
+                 				$scope.cart.push(book);
+                 				$scope.added = true;
+                 			}else if(length>=5){
+                 				$scope.added = false;
+                 				$scope.alreadyExist = false;
+                 				$scope.limitExceeded = true;        				
+                 			}else{
+                 				for(var i=0; i<length; i++){
+                 					if($scope.cart[i].bookId === book.bookId){
+                 						$scope.alreadyExist = true;
+                 						$scope.added = false;
+                 						$scope.limitExceeded = false;
+        								flag = false;
+        								break;
+                                    }else{
+                                    	flag = true;
+                                    }	
+                 				}
+                 				if(flag == true){
+                 					if(length<5){
+                 						$scope.cart.push(book);
+                                    	$scope.added = true;
+                                    	$scope.alreadyExist = false;
+                         				$scope.limitExceeded = false;
+                 					}
+                 					
+                 				}	
+                 			};
+                 			$localStorage.items = $scope.cart;
+         				}else{$scope.eligibility = true;}
+         			});
+         			
          		};
-         		$scope.waitlist = [];
-         		if($localStorage.waitlist==""){
-     		}
-     			else{
-     			$scope.waitlist=$localStorage.waitlist;
-     		}
-         		$scope.addWaitList=function(book){
-         			console.log(book);
-         			$scope.waitlist.push(book);
-         		console.log(book);
-         		$localStorage.waitlist=$scope.waitlist;
-         		}
+         		
          	});
          </script>
 	

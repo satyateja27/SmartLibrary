@@ -33,6 +33,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.jayway.jsonpath.JsonPath;
 
+import bootsample.dao.WaitingRepository;
 import bootsample.model.Book;
 import bootsample.model.Transaction;
 import bootsample.model.User;
@@ -354,7 +355,7 @@ public class BookController {
 		return new ModelAndView("BookEdit", map);
 	}
 
-	@PostMapping(value = "/api/book/waiting", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/api/book/waiting")
 	public ModelAndView waiting(@RequestParam(value = "book_id", required = true) int bookid, HttpServletRequest request) {
 		ModelMap map = new ModelMap();
 		System.out.println(bookid);
@@ -367,6 +368,29 @@ public class BookController {
 			map.addAttribute("message", "The books are waitlisted successfully");
 		} else {
 			map.addAttribute("message", "The book is already wait listed by you");
+		}
+		return new ModelAndView(new MappingJackson2JsonView(), map);
+	}
+	@GetMapping("/api/book/checkUserEligibility")
+	public ModelAndView checkUserEligibility(@RequestParam(value = "bookId", required = true) int bookId,
+			HttpServletRequest request) {
+		ModelMap map = new ModelMap();
+		User user = (User)request.getSession().getAttribute("user");
+		int userId = user.getUserId();
+		Waiting waiting = waitService.findUserById(userId, bookId);
+		
+		if(waitService.checkBookWaiting(bookId)){
+			if(waiting != null){
+				if(waiting.isReservationFlag()){
+					map.addAttribute("message","Success, user is eligible for adding this book");
+				}else{
+					map.addAttribute("message","Error, user not eligible for adding this book");
+				}
+			}else{
+				map.addAttribute("message","Error, user not eligible for adding this book");
+			}
+		}else{
+			map.addAttribute("message", "Success, user is eligible for adding this book");
 		}
 		return new ModelAndView(new MappingJackson2JsonView(), map);
 	}

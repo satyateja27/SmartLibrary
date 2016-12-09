@@ -80,7 +80,7 @@
          	<div class="col-sm-10">
          		<h3 style="text-align:center">Your books </h3>
          		<div class="row" ng-hide="booksReturnedFlag">
-	         		<h2>{{nobooks}}</h2>
+	         		<h4>{{nobooks}}</h4><br/>
 	         		<table>
 	         			<tr>
 	         				<th>Author</th>
@@ -110,13 +110,12 @@
 	         		
          		</div>
          		<div class="row" ng-hide="returnHistoryFlag">
-         		<h3>You have returned these books</h3>
+         		<h3>Following Books has been Returned</h3>
 	         		<table>
 	         			<tr>
 	         				<th>Author</th>
 	         				<th>Title</th>
 	         				<th>Publisher</th>
-	         		
 	         				<th>Due Amount</th>
 	         				
 	         			</tr>
@@ -124,11 +123,8 @@
 	         				<td>{{book.author}}</td>
 	         				<td>{{book.title}}</td>
 	         				<td>{{book.publisher}}</td>
-	         				
 	         				<td>{{data.DueAmount[$index]}}</td>
-	         				<td></td>
-	         				
-	         				</tr>
+	         			</tr>
 	         				
 	         		</table>
 	         		<br>
@@ -169,7 +165,7 @@
          					$scope.books=response.books;
          				}
          				else{
-         					$scope.nobooks="no books are there to return";
+         					$scope.nobooks="There are no books checked out to return";
          				}
          			})
          		}
