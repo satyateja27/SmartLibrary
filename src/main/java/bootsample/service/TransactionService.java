@@ -16,12 +16,11 @@ import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import bootsample.dao.ReservationRepository;
 import bootsample.dao.TransactionRepository;
 import bootsample.model.Book;
-import bootsample.model.Reservation;
 import bootsample.model.Transaction;
 import bootsample.model.User;
+import bootsample.model.Waiting;
 
 @Transactional
 @Service
@@ -34,9 +33,6 @@ public class TransactionService {
 	
 	@Autowired
 	private WaitingService waitService;
-	
-	@Autowired
-	private ReservationRepository reservationRepository;
 	
 	@Autowired
 	private NotificationService notificationService;
@@ -173,23 +169,21 @@ public class TransactionService {
 			int bookid = book.getBookId();
 			increaseCount(bookid);						
 			
-			//waitList notification
-			int userid=waitService.findUserwaiting(bookid);
+			Waiting wait=waitService.findUserwaiting(bookid);
+			System.out.println("inside wait 2");			
+			if(wait!=null){
+				int userid=wait.getUser().getUserId();
 			User user=userService.findUser(userid);
 			Calendar c = new GregorianCalendar();
-			c.add(Calendar.DATE, 3);
 			Date date = c.getTime();
-			java.sql.Date end_date = new java.sql.Date(date.getTime());
+			java.sql.Date available_date = new java.sql.Date(date.getTime());		
+			Waiting wait1=waitService.findUserwaiting(bookid);
+			wait1.setReservationFlag(true);
+			wait1.setBookAvailableDate(available_date);
+			waitService.save(wait1);
 			notificationService.waitlistNotification(user, book);
-			Reservation reserve=new Reservation();
-			reserve.setBook(book);
-			reserve.setUser(user);
-			reserve.setReservation_enddate(end_date);
-			reservationRepository.save(reserve);
-			waitService.deleteUserwaiting(bookid);			
+			}	
 		}
-		// int sum = IntStream.of(dueAmount).sum();
-		// System.out.println("The sum is " + sum);
 		result.put("Due Amount", dueAmount);
 		result.put("StatusCode", 200);
 

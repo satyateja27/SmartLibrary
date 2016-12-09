@@ -103,6 +103,32 @@
 	         		<br/>
 	         		
          		</div><br/>
+         		 	<div class="col-sm-10">
+         		<div class="row">
+	         		<h3>Books in Waitlist</h3><br/>
+	         		<table>
+	         			<tr>
+	         				<th>Author</th>
+	         				<th>Title</th>
+	         				<th>Call Number</th>
+	         				<th>Publisher</th>
+	         				<th>Publication Year</th>
+	         				<th>Available Copies</th>
+	         				<th>Operation</th>
+	         			</tr>
+	         			<tr ng-repeat="book in waitlist">
+	         				<td>{{book.author}}</td>
+	         				<td>{{book.title}}</td>
+	         				<td>{{book.callNumber}}</td>
+	         				<td>{{book.publisher}}</td>
+	         				<td>{{book.yearOfPublication}}</td>
+	         				<td>{{book.numberOfCopies}}</td>
+	         				<td><button class="btn" style="color:white;background-color:#f4426b" ng-click="remove(book)">Remove</button></td>
+	         			</tr>
+	         		</table>
+	         		<br/>
+	         		
+         		</div><br>
          		<div class="row" ng-show="checkout">
 	         			<div class="col-lg-4"></div>
 	         			<div class="col-lg-4"><input type="submit" class="btn btn-primary form-control" value="Proceed to Checkout" ng-click="proceed()"></button></div>
@@ -119,7 +145,8 @@
          	var app = angular.module('myApp',['ngStorage']);
          	app.controller('myCtrl', function($scope, $http, $window, $localStorage){
          		$scope.books = $localStorage.items;
-         		if($localStorage.items.length === 0){$scope.checkout=false}else{$scope.checkout=true};
+         		$scope.waitlist=$localStorage.waitlist;
+         		if($localStorage.items.length === 0 && $localStorage.waitlist.length===0){$scope.checkout=false}else{$scope.checkout=true};
          		$scope.remove = function(book){
          			$scope.checkout=true;
          			$scope.error=false;

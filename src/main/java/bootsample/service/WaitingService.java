@@ -48,38 +48,44 @@ public class WaitingService {
 		WaitingRepository.save(wait);
 	}
 	
-	public Map<String,Object> waitlist(int bookid[],User user){
+	public Map<String,Object> waitlist(int bookid,User user){
 		Map<String, Object> result = new HashMap<String, Object>();
 //		java.util.Date utilDate = new java.util.Date();
 //		java.sql.Date date = new java.sql.Date(utilDate.getTime());
-		List<Book> books = new ArrayList();
 		int userid=user.getUserId();
-		for(int i=0;i<bookid.length;i++){
-			Waiting user1 = WaitingRepository.findUserById(userid,bookid[i]);
+		Book book=new Book();
+		System.out.println("in waiting service");
+			Waiting user1 = WaitingRepository.findUserById(userid,bookid);
 			if(user1==null){
-				Date date=transactionService.findBookwithDueDate(bookid[i]);
+//				Date date=transactionService.findBookwithDueDate(bookid);
 				Waiting wait=new Waiting();
-				wait.setBookAvailableDate(date);
-				wait.setBook(bookService.findOne(bookid[i]));
+				wait.setBook(bookService.findOne(bookid));
 				wait.setUser(user);
+				wait.setReservationFlag(false);
 				WaitingRepository.save(wait);
-				books.add(bookService.findOne(bookid[i]));
+			book=bookService.findOne(bookid);
 	}
 			else{
 				result.put("statuscode", 404);
 				return result;
 			}
-		}
+		
 		result.put("statuscode", 200);
 		result.put("message", "Successfully waitlisted");
-		result.put("books", books);
+		result.put("book", book);
 		return result;
 }
-	public int findUserwaiting(int bookId){
+	public Waiting findUserwaiting(int bookId){
 		return WaitingRepository.findUserwaiting(bookId);
 	}
 	
 	public void deleteUserwaiting(int bookId){
 		WaitingRepository.deleteUserwaiting(bookId);
 	}
+
+
+//	public void updateWaitingstatus( int userid, int bookid, Date available_date) {
+//		// TODO Auto-generated method stub
+//		WaitingRepository.updateWaitingstatus(available_date, userid, bookid);
+//	}
 }

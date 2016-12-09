@@ -170,6 +170,7 @@
          		$scope.logout = function(){
          			$http.get('/api/deleteSession').success(function(response){
          				$localStorage.items = "";
+         				$localStorage.waitlist="";
          				window.location.href="/";
          			});
          		};
@@ -179,6 +180,7 @@
     				}
     			});
          		$scope.cart = [];
+         		
          		if($localStorage.items==""){
          			
          		}
@@ -221,7 +223,18 @@
          			};
          			$localStorage.items = $scope.cart;
          		};
-         		
+         		$scope.waitlist = [];
+         		if($localStorage.waitlist==""){
+     		}
+     			else{
+     			$scope.waitlist=$localStorage.waitlist;
+     		}
+         		$scope.addWaitList=function(book){
+         			console.log(book);
+         			$scope.waitlist.push(book);
+         		console.log(book);
+         		$localStorage.waitlist=$scope.waitlist;
+         		}
          	});
          </script>
 	

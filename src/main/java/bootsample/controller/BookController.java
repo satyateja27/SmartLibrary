@@ -342,16 +342,15 @@ public class BookController {
 	}
 
 	@PostMapping(value = "/api/book/waiting", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ModelAndView waiting(@RequestBody BookRequestDto dto, HttpServletRequest request) {
+	public ModelAndView waiting(@RequestParam(value = "book_id", required = true) int bookid, HttpServletRequest request) {
 		ModelMap map = new ModelMap();
-		int[] bookids = dto.getBookid();
-		System.out.println(bookids[0]);
+		System.out.println(bookid);
 		User user1 = (User) request.getSession().getAttribute("user");
-		Map<String, Object> result = waitService.waitlist(bookids, user1);
+		Map<String, Object> result = waitService.waitlist(bookid, user1);
 		int statuscode = (int) result.get("statuscode");
-		List<Book> books = (List<Book>) result.get("books");
+	Book book=(Book) result.get("book");
 		if (statuscode == 200) {
-			map.addAttribute("books", books);
+			map.addAttribute("book", book);
 			map.addAttribute("message", "The books are waitlisted successfully");
 		} else {
 			map.addAttribute("message", "The book is already wait listed by you");
