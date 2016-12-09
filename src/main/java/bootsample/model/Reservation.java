@@ -16,6 +16,14 @@ public class Reservation {
 	private int reservationid;
 	@ManyToOne(targetEntity=User.class)
 	private User user;
+	@ManyToOne(targetEntity=Book.class)
+	private Book book;
+	public Book getBook() {
+		return book;
+	}
+	public void setBook(Book book) {
+		this.book = book;
+	}
 	private Date reservation_enddate;
 	public int getReservationid() {
 		return reservationid;

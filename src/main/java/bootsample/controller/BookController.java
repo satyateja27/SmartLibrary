@@ -144,11 +144,13 @@ public class BookController {
 		ModelMap map = new ModelMap();
 		String bookUrl = "http://isbndb.com/api/v2/json/AI9PNP81/book/" + isbn;
 		URL url = new URL(bookUrl);
+		
 		HttpURLConnection request = (HttpURLConnection) url.openConnection();
 		request.connect();
 		JsonParser parser = new JsonParser();
 		JsonElement element = parser.parse(new InputStreamReader((InputStream) request.getInputStream()));
 		JsonObject object = element.getAsJsonObject();
+		System.out.println(element);
 		String title = JsonPath.read(object.toString(), "$.data[0].title");
 		String publisher = JsonPath.read(object.toString(), "$.data[0].publisher_name");
 		String author = JsonPath.read(object.toString(), "$.data[0].author_data[0].name");

@@ -107,8 +107,12 @@
 	         			<div class="col-lg-4"></div>
 	         			<div class="col-lg-4"><input type="submit" class="btn btn-primary form-control" value="Proceed to Checkout" ng-click="proceed()"></button></div>
 	         	</div>
+	         	<div class="row" ng-show="error">
+	         	  	<h4>{{errormessage}}</h4>
+	         	  	</div>
          	</div>
          	<div class="col-sm-1"></div>
+       
          </div>
          </div>
          <script>
@@ -117,6 +121,8 @@
          		$scope.books = $localStorage.items;
          		if($localStorage.items.length === 0){$scope.checkout=false}else{$scope.checkout=true};
          		$scope.remove = function(book){
+         			$scope.checkout=true;
+         			$scope.error=false;
          			var index = $localStorage.items.indexOf(book);
          			$localStorage.items.splice(index,1);
          			if($localStorage.items.length === 0){$scope.checkout=false}else{$scope.checkout=true};
@@ -150,6 +156,19 @@
          					$localStorage.items="";
          					window.location.href = "/afterCheckout";
          				}
+         				else if(data.Message==="Can not check out more than 5 books in a day"){
+         					console.log(data);
+         					$scope.checkout=false;    					
+         					$scope.errormessage="Cannot check out more than 5 books in a day";
+         					$scope.error=true;
+         				}
+         				else{
+         					$scope.checkout=false;
+         					
+         					$scope.errormessage="You have reached your limit of 10 books";
+         					$scope.error=true;
+         				}
+         				
          			});
          		};
          		

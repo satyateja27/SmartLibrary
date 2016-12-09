@@ -96,7 +96,7 @@
 	         		</div><br/>
 	         			         		<form ng-submit="createBook()" name="myForm" >
 	         		<div class="row" ng-hide="show">
-	         			<div class="col-lg-3"><input type="text" class="form-control" placeholder="Enter ISBN" ng-model="isbnValue" required pattern=".{10}"/></div>
+	         			<div class="col-lg-3"><input type="text" class="form-control" placeholder="Enter ISBN" ng-model="isbnValue" /></div>
 	         			<div class="col-lg-2"><button class="btn btn-primary" ng-click="getIsbnBook()">Get Book Details</button></div>
 	         		</div><br/>
 	         		<div class="row col-lg-4">

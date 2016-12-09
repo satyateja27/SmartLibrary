@@ -179,7 +179,12 @@
     				}
     			});
          		$scope.cart = [];
-         		$scope.cart.concat($localStorage.items);
+         		if($localStorage.items==""){
+         			
+         		}
+         		else{
+         		$scope.cart=$localStorage.items;
+         		}
          		$scope.addCart = function(book){
          			
          			var length = $scope.cart.length;

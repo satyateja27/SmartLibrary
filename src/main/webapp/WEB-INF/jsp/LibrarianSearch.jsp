@@ -219,13 +219,10 @@
          	            headers : {'Content-Type': 'application/json'}
          			}).success(function(response){
          				if(response.status==500){
-<<<<<<< Updated upstream
-         					alert(response.message)
-=======
          					$scope.deleteUnsuccess = true;
          					$scope.message = response.message;
          					$scope.results=false;
->>>>>>> Stashed changes
+
          				}else{
          				$scope.deleted = true;
          				$scope.results=false;

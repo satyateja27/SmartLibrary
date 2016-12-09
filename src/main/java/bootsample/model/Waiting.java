@@ -19,9 +19,7 @@ public class Waiting implements Serializable{
 	private Book book;
 	@ManyToOne(targetEntity=User.class)
 	private User user;
-
-	private Date bookAvailableDate;
-	
+	private Date bookAvailableDate;	
 	public Waiting(){};
 	public Waiting(Book book, User user, Date bookAvailableDate) {
 		super();

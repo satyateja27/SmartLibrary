@@ -144,5 +144,22 @@ public class NotificationService {
 		message.setText("Welcome to Smart Library, You have completed the account verification and Now you can use the services of "+user.getRole());
 		javaMailSender.send(message);
 	}
+	
+	public void waitlistNotification(User user1, Book book) {
+		SimpleMailMessage message = new SimpleMailMessage();
+		System.out.println(message.toString());
+		message.setTo(user1.getEmail());
+		message.setFrom("smartlibrarycmpe275@gmail.com");
+		message.setSubject("You have returned book");
+		String name = user1.getFirstName() + " " + user1.getLastName();
+		message.setText("Dear " + name
+				+ ", \n\nThank you for visiting our library. \nThe book you have been waiting for is available now:\nBook ID: "
+				+ book.getBookId() + "\nBook Title: " + book.getTitle() +"\nThis book will be reserved for u till 3 days from the moment you receive this email"
+				+ "\n\nPlease visit again. \n \nThis is an automated Message from Smart library. Please Do not reply to this mail.");
+		javaMailSender.send(message);
+
+		
+	}
+
 
 }

@@ -16,8 +16,10 @@ import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import bootsample.dao.ReservationRepository;
 import bootsample.dao.TransactionRepository;
 import bootsample.model.Book;
+import bootsample.model.Reservation;
 import bootsample.model.Transaction;
 import bootsample.model.User;
 
@@ -29,8 +31,18 @@ public class TransactionService {
 
 	@Autowired
 	private UserService userService;
-
+	
+	@Autowired
+	private WaitingService waitService;
+	
+	@Autowired
+	private ReservationRepository reservationRepository;
+	
+	@Autowired
+	private NotificationService notificationService;
+	
 	private final TransactionRepository TransactionRepository;
+	
 
 	public TransactionService(bootsample.dao.TransactionRepository transactionRepository) {
 		TransactionRepository = transactionRepository;
@@ -159,7 +171,22 @@ public class TransactionService {
 			TransactionRepository.save(tran);
 			Book book = tran.getBook();
 			int bookid = book.getBookId();
-			increaseCount(bookid);
+			increaseCount(bookid);						
+			
+			//waitList notification
+			int userid=waitService.findUserwaiting(bookid);
+			User user=userService.findUser(userid);
+			Calendar c = new GregorianCalendar();
+			c.add(Calendar.DATE, 3);
+			Date date = c.getTime();
+			java.sql.Date end_date = new java.sql.Date(date.getTime());
+			notificationService.waitlistNotification(user, book);
+			Reservation reserve=new Reservation();
+			reserve.setBook(book);
+			reserve.setUser(user);
+			reserve.setReservation_enddate(end_date);
+			reservationRepository.save(reserve);
+			waitService.deleteUserwaiting(bookid);			
 		}
 		// int sum = IntStream.of(dueAmount).sum();
 		// System.out.println("The sum is " + sum);

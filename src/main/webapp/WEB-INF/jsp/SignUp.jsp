@@ -48,17 +48,10 @@
  		 </div>
 			<h3>Sign Up for Smart Library</h3>
 			<form ng-submit="register()" >
-<<<<<<< Updated upstream
 			<div><input type="text" class="form-control" placeholder="First Name" ng-model="firstName" pattern="[A-Za-z].{1,}" title="Please enter only alphabets" required ><br></div>
 			<div><input type="text" class="form-control" placeholder="Last Name" ng-model="lastName" required pattern="[A-Za-z].{1,}" title="Please enter only alphabets"><br></div>
 			<div><input type="text" class="form-control" placeholder="University Id" ng-model="universityid" required pattern="[0-9]{6}" title="Please enter 6 Digit UID"><br></div>
-			<div><input type="email" class="form-control" placeholder="Email id" ng-model="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{1,}$" title="Please enter correct Email"><br></div>
-=======
-			<div><input type="text" class="form-control" placeholder="First Name" ng-model="firstName" required pattern="[A-Za-z]{1,}"><br></div>
-			<div><input type="text" class="form-control" placeholder="Last Name" ng-model="lastName" required pattern="[A-Za-z]{1,}"><br></div>
-			<div><input type="text" class="form-control" placeholder="University Id" ng-model="universityid" required pattern="[0-9]{6}"><br></div>
-			<div><input type="email" class="form-control" placeholder="Email id" ng-model="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{1,}$"><br></div>
->>>>>>> Stashed changes
+			<div><input type="email" class="form-control" placeholder="Email id" ng-model="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{1,}$" title="Please enter correct Email"><br></div>		
 			<div><input type="password" class="form-control" placeholder="Password" ng-model="password" required><br></div>
 			<div>
 		         <select class="form-control" ng-change="getRole(role)" ng-model="role" required>
@@ -103,9 +96,13 @@
 							if($scope.email.lastIndexOf('@sjsu.edu') === length-10){
 								$scope.emailAlert = true;
 								flag=false;
-							}else{$scope.emailAlert = false;}
+							}else{$scope.emailAlert = false;
+								flag=true;	
+							}
 						};
-						}else{$scope.emailAlert = false};
+						}else{$scope.emailAlert = false
+								flag=true;	
+						};
 					}
 					
 				}else{

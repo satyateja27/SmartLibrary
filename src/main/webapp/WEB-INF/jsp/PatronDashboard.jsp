@@ -80,7 +80,7 @@
          	<div class="col-sm-8" ng-init=getAllBooks()>
          		<h1>Patron Dashboard</h1><br/><br/>
          		<div>
-	         		<h3>Books available</h3>
+	         		<h3>Your Waitlisting Books</h3>
 	         		<table>
 	         			<tr>
 	         				<th>Author</th>
@@ -101,16 +101,8 @@
 	         		</table>
          		</div><br/>
          	</div>
-         	<div class="col-sm-3" style="border-color:#cccccc;border-style:solid; border-width:1px;">
-         	<div ng-repeat="book in cart">
-         	         {{book.author}}
-                     {{book.title}}
-      				 {{book.callNumber}}
-                     {{book.publisher}}
-            	     {{book.yearOfPublication}}
+         	
          	</div>
-         	</div>
-         </div>
          </div>
          <script>
          	var app = angular.module('myApp',['ngStorage']);

@@ -75,4 +75,11 @@ public class WaitingService {
 		result.put("books", books);
 		return result;
 }
+	public int findUserwaiting(int bookId){
+		return WaitingRepository.findUserwaiting(bookId);
+	}
+	
+	public void deleteUserwaiting(int bookId){
+		WaitingRepository.deleteUserwaiting(bookId);
+	}
 }

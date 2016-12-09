@@ -67,6 +67,7 @@
 				if(data.message.includes("Invalid")){
 					$scope.error = true;
 				}else {
+					$scope.error=false;
 					if(data.user.role === 'librarian'){
 						$window.location.href = "/librarianDashboard";
 					}else{
