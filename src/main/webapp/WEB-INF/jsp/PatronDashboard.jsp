@@ -77,7 +77,7 @@
          </div>
          <div>
          	<div class="col-sm-1" ></div>
-         	<div class="col-sm-8" ng-init=getAllBooks()>
+         	<div class="col-sm-8">
          		<h1>Patron Dashboard</h1><br/><br/>
          		<div>
 	         		<h3>Your Waitlisting Books</h3>
@@ -88,15 +88,13 @@
 	         				<th>Call Number</th>
 	         				<th>Publisher</th>
 	         				<th>Publication Year</th>
-							<th>Take them home</th>
 	         			</tr>
-	         			<tr ng-repeat="book in books">
-	         				<td>{{book.author}}</td>
-	         				<td>{{book.title}}</td>
-	         				<td>{{book.callNumber}}</td>
-	         				<td>{{book.publisher}}</td>
-	         				<td>{{book.yearOfPublication}}</td>
-	         				<td>  <button type="button" class="btn btn-success" ng-click=Cart(book)>Add to cart</button>
+	         			<tr ng-repeat="item in waiting">
+	         				<td>{{item.book.author}}</td>
+	         				<td>{{item.book.title}}</td>
+	         				<td>{{item.book.callNumber}}</td>
+	         				<td>{{item.book.publisher}}</td>
+	         				<td>{{item.book.yearOfPublication}}</td>
 	         			</tr>
 	         		</table>
          		</div><br/>
@@ -108,33 +106,12 @@
          	var app = angular.module('myApp',['ngStorage']);
          	app.controller('myCtrl', function($scope, $http,$localStorage){
                  $scope.cart=[];
-         		$scope.getAllBooks=function(){
-         		        $http.get("/api/book/getAllBooks").then(function(response){
-         			     console.log(response)
-         		        	$scope.books = response.books;
-         		});
-         		};
-         		$scope.Cart=function(book){
-                    var length=$scope.cart.length;
-         			if($scope.cart.length<=5){
-                    count=0;
-                    for(var i=0;i<length;i++){
-                        if($scope.cart.book[i].title==book.title){
-                            count++;
-                        }
-                    }
-                    if(count>0){
-
-                    }
-                    else{
-                    $scope.cart.push(book);
-                    $localStorage.cart=$scope.cart;
-                    }
-                                        }
-                    else{
-                    $scope.message="You have exceeded the limit if you want to add more books please delete the previous books";
-         		}
-         		};
+                 $http.get("/api/book/getUserWaiting").then(function(response){
+     			     console.log(response)
+     		        	$scope.waiting = response.data.waitingBooks;
+     			});
+         		
+         		
          		$scope.logout = function(){
          			$http.get('/api/deleteSession').success(function(response){
          				$localStorage.items = "";

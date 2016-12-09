@@ -187,6 +187,18 @@
          		else{
          		$scope.cart=$localStorage.items;
          		}
+         		$scope.addWaitList = function(book){
+         			$http({
+         				method:'POST',
+         				url:'',
+         				params:{book_id:book.Id},
+         				headers : {'Content-Type': 'application/json'}
+         			}).success(function(data){
+         				if(data.message = "Success"){
+         					window.location.href="/patronDashboard";
+         				}
+         			});
+         		};
          		$scope.addCart = function(book){
          			
          			var length = $scope.cart.length;

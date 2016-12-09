@@ -42,6 +42,11 @@ public class WaitingService {
 
 		return WaitingRepository.findUserById(userid,bookid);
 	}
+	
+	public List<Waiting> findByUser(int userId) {
+
+		return WaitingRepository.findWaitingByUser(userId);
+	}
 
 	public void save(Waiting wait) {
 		// TODO Auto-generated method stub

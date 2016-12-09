@@ -36,6 +36,7 @@ import com.jayway.jsonpath.JsonPath;
 import bootsample.model.Book;
 import bootsample.model.Transaction;
 import bootsample.model.User;
+import bootsample.model.Waiting;
 import bootsample.requestdto.BookRequestDto;
 import bootsample.requestdto.returnBookdto;
 import bootsample.service.BookService;
@@ -115,6 +116,18 @@ public class BookController {
 		return new ModelAndView(new MappingJackson2JsonView(), map);
 	}
 
+	@GetMapping("/api/book/getUserWaiting")
+	public ModelAndView getUserWaiting(HttpServletRequest request) {
+		User user = (User) request.getSession().getAttribute("user");
+		int userId = user.getUserId();
+		System.out.println(userId);
+//		List<Book> books = bookService.findAllBooksByLibrarian(userId);
+		List<Waiting> waiting = waitService.findByUser(userId);
+		ModelMap map = new ModelMap();
+		map.addAttribute("waitingBooks", waiting);
+		return new ModelAndView(new MappingJackson2JsonView(), map);
+	}
+	
 	@GetMapping("/api/book/getByLibrarian")
 	public ModelAndView getLibrarianBooks(HttpServletRequest request) {
 		User user = (User) request.getSession().getAttribute("user");
