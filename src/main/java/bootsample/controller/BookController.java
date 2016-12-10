@@ -209,6 +209,13 @@ public class BookController {
 			User user = userService.findUser(userid);
 			List<Book> books = new ArrayList<>();
 			for (int bookid : bookids) {
+				System.out.println("checking bookids");
+				System.out.println(bookid +" " +userid);
+				System.out.println(waitService.getWaitStatus(bookid, userid));
+				Waiting waiting = waitService.getWaitStatus(bookid,userid);
+				if(waiting != null){
+					waitService.deleteWaitingUser(waiting.getWaitingId());
+				}
 				Book book = bookService.findOne(bookid);
 				books.add(book);
 			}

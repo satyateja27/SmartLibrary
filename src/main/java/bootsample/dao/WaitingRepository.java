@@ -25,9 +25,4 @@ public interface WaitingRepository extends CrudRepository<Waiting, Integer>{
 	@Query(value="select * from smartlibrary.waiting where book_book_id=? LIMIT 1",nativeQuery=true)
 	public Waiting findUserwaiting(int bookId);
 	
-//	@Query(value="update smartlibrary.waiting set reservation_flag=1, available_date=?1 where user_user_id=?2 and book_book_id=?3",nativeQuery=true)
-//	public void updateWaitingstatus(Date available_date,int userid,int bookid); 
-	
-	@Query(value="Delete TOP 1 user_user_id from smartlibrary.waiting where book_book_id=?",nativeQuery=true)
-	public void deleteUserwaiting(int bookid);
 }

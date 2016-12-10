@@ -53,6 +53,15 @@ public class WaitingService {
 		WaitingRepository.save(wait);
 	}
 	
+	public void deleteWaitingUser(int waitingId) {
+		WaitingRepository.delete(waitingId);
+	}
+	
+	public Waiting getWaitStatus(int bookId, int userId) {
+		Waiting waiting = WaitingRepository.findUserById(userId,bookId);
+		return waiting;
+	}
+	
 	public Map<String,Object> waitlist(int bookid,User user){
 		Map<String, Object> result = new HashMap<String, Object>();
 //		java.util.Date utilDate = new java.util.Date();
@@ -91,13 +100,4 @@ public class WaitingService {
 		}else{return false;}
 	}
 	
-	public void deleteUserwaiting(int bookId){
-		WaitingRepository.deleteUserwaiting(bookId);
-	}
-
-
-//	public void updateWaitingstatus( int userid, int bookid, Date available_date) {
-//		// TODO Auto-generated method stub
-//		WaitingRepository.updateWaitingstatus(available_date, userid, bookid);
-//	}
 }
