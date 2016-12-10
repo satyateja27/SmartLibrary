@@ -222,7 +222,6 @@
          					$scope.deleteUnsuccess = true;
          					$scope.message = response.message;
          					$scope.results=false;
-
          				}else{
          				$scope.deleted = true;
          				$scope.results=false;

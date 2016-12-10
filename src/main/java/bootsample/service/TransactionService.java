@@ -47,6 +47,10 @@ public class TransactionService {
 	public Transaction findTransaction(int tranid) {
 		return TransactionRepository.findOne(tranid);
 	}
+	
+	public List<Transaction> sendDueReminder(){
+		return TransactionRepository.reminderMailDue();
+	}
 
 	public Map<String, Object> beforecheckout(int[] bookids, int userid) {
 		Map<String, Object> result = new HashMap<String, Object>();

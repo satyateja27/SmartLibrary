@@ -156,7 +156,7 @@ public class BookController {
 	@GetMapping("/api/book/getBookByIsbn")
 	public ModelAndView getBookByIsbn(@RequestParam(value = "isbn", required = true) String isbn) throws IOException {
 		ModelMap map = new ModelMap();
-		String bookUrl = "http://isbndb.com/api/v2/json/AI9PNP81/book/" + isbn;
+		String bookUrl = "http://isbndb.com/api/v2/json/AI9PNP81/book/"+isbn;
 		URL url = new URL(bookUrl);
 		
 		HttpURLConnection request = (HttpURLConnection) url.openConnection();

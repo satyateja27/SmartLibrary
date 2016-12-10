@@ -25,4 +25,10 @@ public interface WaitingRepository extends CrudRepository<Waiting, Integer>{
 	@Query(value="select * from smartlibrary.waiting where book_book_id=? LIMIT 1",nativeQuery=true)
 	public Waiting findUserwaiting(int bookId);
 	
+	@Query(value="SELECT * FROM smartlibrary.waiting where reservation_flag=true",nativeQuery=true)
+	public List<Waiting> findAllWaiting();
+	
+	@Query(value="SELECT * FROM smartlibrary.waiting where book_book_id=? LIMIT 1",nativeQuery=true)
+	public Waiting findNextOne(int bookId);
+	
 }

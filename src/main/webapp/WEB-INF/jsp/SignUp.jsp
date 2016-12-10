@@ -30,19 +30,19 @@
 		<div class="col-sm-4" style="text-align:center">
 		<div >
 			<div class="alert alert-danger alert-dismissable" ng-show="error">
-	    	<a href="#" class="close" data-dismiss="alert" aria-label="close">Ã—</a>
+	    	<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
 	   		<strong>Error !</strong> {{message}}
 	 		 </div>
 	 		 <div class="alert alert-danger alert-dismissable" ng-show="emailAlert">
-	    	<a href="#" class="close" data-dismiss="alert" aria-label="close">Ã—</a>
+	    	<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
 	   		<strong>Error !</strong> Please Enter '@sjsu.edu' Domain Email
 	 		 </div>
 	 		 <div class="alert alert-danger alert-dismissable" ng-show="numberAlert">
-	    	<a href="#" class="close" data-dismiss="alert" aria-label="close">Ã—</a>
+	    	<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
 	   		<strong>Error !</strong> Please Enter valid Domain Email
 	 		 </div>
 	 		 <div class="alert alert-danger alert-dismissable" ng-show="reCheck">
-	    	<a href="#" class="close" data-dismiss="alert" aria-label="close">Ã—</a>
+	    	<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
 	   		<strong>Error !</strong> Your Email is invalid. Please Enter Valid mail
 	 		 </div>
  		 </div>
@@ -74,7 +74,6 @@
 			<div><p>Already have an account?  <a href="/">Login here</a></p></div>
 		</div>
 		<script type="text/javascript">
-
 		var app = angular.module('myApp',['ngAnimate', 'ui.bootstrap']);
 		app.controller('myCtrl', function ($scope, $http,$window) {
 			$scope.register = function () {

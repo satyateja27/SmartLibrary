@@ -100,4 +100,21 @@ public class WaitingService {
 		}else{return false;}
 	}
 	
+	public List<Waiting> findAllWaitingUsers(){
+		return WaitingRepository.findAllWaiting();
+	}
+	
+	public void adjustWaitingList(Waiting waiting){
+		int bookId = waiting.getBook().getBookId();
+		WaitingRepository.delete(waiting);
+		Waiting nextWaiting = WaitingRepository.findNextOne(bookId);
+		if(!(nextWaiting==null)){
+			nextWaiting.setReservationFlag(true);
+			nextWaiting.setBookAvailableDate(new Date());
+			WaitingRepository.save(nextWaiting);
+		}else{
+			System.out.println("No Waiting List");
+		}
+	}
+	
 }
