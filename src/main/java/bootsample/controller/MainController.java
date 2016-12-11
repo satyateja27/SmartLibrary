@@ -1,13 +1,17 @@
 package bootsample.controller;
 
 import java.io.IOException;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import bootsample.service.TaskService;
@@ -89,12 +93,17 @@ public class MainController {
 		return new ModelAndView("ReissueBook");
 	}
 
-	@GetMapping("/date")
-	public String getdate() throws IOException {
+	@PostMapping("/date")
+	public ModelAndView getdate(HttpServletRequest request, @RequestBody(required = true) Date date)
+			throws IOException {
+		ModelMap map = new ModelMap();
 
-		String str = "12090000[[20]16]";
-		// Runtime.getRuntime().exec("date -s " + str);
-		System.out.println(str);
-		return "";
+		HttpSession httpSession = request.getSession();
+		httpSession.putValue("systemDate", date);
+		Date testdate = (Date) request.getSession().getAttribute("systemDate");
+		System.out.println("User has entered date" + testdate);
+
+		return new ModelAndView("LibrarianDashboard");
 	}
+
 }

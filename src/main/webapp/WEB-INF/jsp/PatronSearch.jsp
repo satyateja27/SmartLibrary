@@ -64,6 +64,7 @@
                      	<li class="nav-item">
                            <a class="nav-link" href="#" style="color:white"> Hi, ${sessionScope.user.firstName}</a>
                         </li>
+                        	
                      	<li class="nav-item">
                            <a class="nav-link" href="/cart" style="color:white"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a>
                         </li>
@@ -75,6 +76,10 @@
                </nav>
             </div>
          </div>
+         <div align=right>
+                     <h5>Date, ${sessionScope.systemDate}</h5>
+                    
+                     </div>
          <div>
          	<div class="col-sm-1"></div>
          	<div class="col-sm-10">

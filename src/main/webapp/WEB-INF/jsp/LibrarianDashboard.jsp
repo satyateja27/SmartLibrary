@@ -60,6 +60,7 @@
                      	<li class="nav-item">
                            <a class="nav-link" href="#" style="color:white"> Hi, ${sessionScope.user.firstName}</a>
                         </li>
+                        
                      	<li class="nav-item">
                            <a class="nav-link btn" ng-click="logout()" style="color:white"><span class="glyphicon glyphicon-off"></span> Logout</a>
                         </li>
@@ -67,6 +68,17 @@
                   </div>
                </nav>
             </div>
+                   <div align=right>
+              
+                     <h5>Date, ${sessionScope.systemDate}</h5>
+                    <br><br>
+                  
+                     <h5>Set Date and Time</h5>
+                     <form ng-submit="setDate()">
+                     <input type="datetime-local"  ng-model="date"  >
+                     <input type="submit" name="postDate"  value="Set Date">
+                     </form>
+                     </div>
          </div>
          <div>
          	<div class="col-sm-1"></div>
@@ -102,6 +114,22 @@
          <script>
          	var app = angular.module('myApp',[]);
          	app.controller('myCtrl', function($scope, $http){
+         	      $scope.setDate=function(){
+                 	 console.log($scope.date);
+                 	 if ($scope.date==null){
+                 		alert("Please enter a valid date and time");
+                 	 }
+                 	 else{	$http({
+          				method:"POST",
+          				url:'/date',
+          				data: $scope.date
+          			
+          			}).success(function(response){
+          				window.location.href="/librarianDashboard";
+                 	 });
+                 	 
+                  }
+                 	 }
          		$http.get('/api/checkSession').success(function(response){
     				if(response.message == 'absent'){
     					window.location.href="/";

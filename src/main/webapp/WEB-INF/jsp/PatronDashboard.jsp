@@ -64,6 +64,7 @@
                      	<li class="nav-item">
                            <a class="nav-link" href="#" style="color:white"> Hi, ${sessionScope.user.firstName}</a>
                         </li>
+                        
                      	<li class="nav-item">
                            <a class="nav-link" href="/cart" style="color:white"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a>
                         </li>
@@ -71,10 +72,17 @@
                            <a class="nav-link btn" ng-click="logout()" style="color:white"><span class="glyphicon glyphicon-off"></span> Logout</a>
                         </li>
                      </ul>
+                     <br>
+                  
                   </div>
                </nav>
+                 
             </div>
          </div>
+          <div align=right>
+                     <h5>Date, ${sessionScope.systemDate}</h5>
+                    
+                     </div>
          <div>
          	<div class="col-sm-1" ></div>
          	<div class="col-sm-8">
@@ -109,6 +117,30 @@
          	var app = angular.module('myApp',['ngStorage']);
          	app.controller('myCtrl', function($scope, $http,$localStorage){
                  $scope.cart=[];
+                 $scope.setDate=function(){
+                	 console.log($scope.date);
+                	 if ($scope.date==null){
+                		alert("Please enter a valid date and time");
+                	 }
+                	 else{	$http({
+         				method:"POST",
+         				url:'/date',
+         				data: $scope.date
+         			
+         			}).success(function(response){
+                		 if(response.status==200){
+                		 console.log("Date has been set");
+                		 }
+                		 else{
+                			 console.log("Try again");
+                		 }
+                	 });
+                	 
+                 }
+                	 }
+                 
+                 
+                 
                  $http.get("/api/book/getUserWaiting").then(function(response){
      			     console.log(response)
      		        	$scope.waiting = response.data.waitingBooks;

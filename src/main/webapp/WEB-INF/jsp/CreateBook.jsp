@@ -60,6 +60,7 @@
                      	<li class="nav-item">
                            <a class="nav-link" href="#" style="color:white"> Hi, ${sessionScope.user.firstName}</a>
                         </li>
+                        	
                      	<li class="nav-item">
                            <a class="nav-link btn" ng-click="logout()" style="color:white"><span class="glyphicon glyphicon-off"></span> Logout</a>
                         </li>
@@ -68,6 +69,10 @@
                </nav>
             </div>
          </div>
+         <div align=right>
+                     <h5>Date, ${sessionScope.systemDate}</h5>
+                    
+                     </div>
          <div>
          	<div class="row" ng-show="created">
          				<div class="col-lg-4"></div>
