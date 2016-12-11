@@ -193,7 +193,7 @@
              	         		
              				}
              				else{
-             					alert("Can not reissue a book more than twice");
+             					alert("Error: "+data.Message);
              					$scope.booksReissueFlag=false;
              	         		$scope.reissued=true;
              					$scope.getBookstoReturn();

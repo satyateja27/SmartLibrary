@@ -30,15 +30,14 @@ public class TransactionService {
 
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private WaitingService waitService;
-	
+
 	@Autowired
 	private NotificationService notificationService;
-	
+
 	private final TransactionRepository TransactionRepository;
-	
 
 	public TransactionService(bootsample.dao.TransactionRepository transactionRepository) {
 		TransactionRepository = transactionRepository;
@@ -167,22 +166,22 @@ public class TransactionService {
 			TransactionRepository.save(tran);
 			Book book = tran.getBook();
 			int bookid = book.getBookId();
-			increaseCount(bookid);						
-			
-			Waiting wait=waitService.findUserwaiting(bookid);
-			System.out.println("inside wait 2");			
-			if(wait!=null){
-				int userid=wait.getUser().getUserId();
-			User user=userService.findUser(userid);
-			Calendar c = new GregorianCalendar();
-			Date date = c.getTime();
-			java.sql.Date available_date = new java.sql.Date(date.getTime());		
-			Waiting wait1=waitService.findUserwaiting(bookid);
-			wait1.setReservationFlag(true);
-			wait1.setBookAvailableDate(available_date);
-			waitService.save(wait1);
-			notificationService.waitlistNotification(user, book);
-			}	
+			increaseCount(bookid);
+
+			Waiting wait = waitService.findUserwaiting(bookid);
+			System.out.println("inside wait 2");
+			if (wait != null) {
+				int userid = wait.getUser().getUserId();
+				User user = userService.findUser(userid);
+				Calendar c = new GregorianCalendar();
+				Date date = c.getTime();
+				java.sql.Date available_date = new java.sql.Date(date.getTime());
+				Waiting wait1 = waitService.findUserwaiting(bookid);
+				wait1.setReservationFlag(true);
+				wait1.setBookAvailableDate(available_date);
+				waitService.save(wait1);
+				notificationService.waitlistNotification(user, book);
+			}
 		}
 		result.put("Due Amount", dueAmount);
 		result.put("StatusCode", 200);
@@ -204,26 +203,35 @@ public class TransactionService {
 		Map<String, Object> result = new HashMap<String, Object>();
 		Transaction tran = TransactionRepository.findByTransactionId(tranid);
 		int extention_number = tran.getExtentionNumber();
+		int bookId = tran.getBook().getBookId();
 		if (extention_number > 1) {
 			System.out.println("Can not reissue a book morethan twice" + 1);
 			result.put("Message", "Can not reissue a book more than twice");
 			result.put("StatusCode", 400);
 		} else {
-			extention_number = extention_number + 1;
-			Date date1 = tran.getEndDate();
-			Calendar c = new GregorianCalendar();
-			c.setTime(date1);
-			c.add(Calendar.DATE, 30);
-			Date date = c.getTime();
-			java.sql.Date end_date = new java.sql.Date(date.getTime());
-			System.out.println("Date is" + end_date);
-			tran.setEndDate(end_date);
-			tran.setExtentionNumber(extention_number);
-			TransactionRepository.save(tran);
-			result.put("Extented times", extention_number);
-			result.put("StatusCode", 200);
-			result.put("Message", "Book has been reissued");
-			result.put("Due Date", end_date);
+			Waiting wait = waitService.chkForReissue(bookId);
+			System.out.println("waiting id is" + wait);
+			if (wait.getBook().getBookId() == bookId) {
+
+				result.put("Message", "Cannot reissue: Book is in waiting list");
+				result.put("StatusCode", 400);
+			} else {
+				extention_number = extention_number + 1;
+				Date date1 = tran.getEndDate();
+				Calendar c = new GregorianCalendar();
+				c.setTime(date1);
+				c.add(Calendar.DATE, 30);
+				Date date = c.getTime();
+				java.sql.Date end_date = new java.sql.Date(date.getTime());
+				System.out.println("Date is" + end_date);
+				tran.setEndDate(end_date);
+				tran.setExtentionNumber(extention_number);
+				TransactionRepository.save(tran);
+				result.put("Extented times", extention_number);
+				result.put("StatusCode", 200);
+				result.put("Message", "Book has been reissued");
+				result.put("Due Date", end_date);
+			}
 		}
 		return result;
 	}
@@ -231,8 +239,8 @@ public class TransactionService {
 	public Date findBookwithDueDate(int bookid) {
 		return TransactionRepository.findBookwithDueDate(bookid);
 	}
-	
-	public List<Transaction> findBookWithBookId(int bookId){
+
+	public List<Transaction> findBookWithBookId(int bookId) {
 		return TransactionRepository.findBookByBookId(bookId);
 	}
 }

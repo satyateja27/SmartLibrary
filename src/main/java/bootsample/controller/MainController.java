@@ -1,5 +1,7 @@
 package bootsample.controller;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -85,5 +87,14 @@ public class MainController {
 	@GetMapping("/reissueBook")
 	public ModelAndView reissueBook() {
 		return new ModelAndView("ReissueBook");
+	}
+
+	@GetMapping("/date")
+	public String getdate() throws IOException {
+
+		String str = "12090000[[20]16]";
+		// Runtime.getRuntime().exec("date -s " + str);
+		System.out.println(str);
+		return "";
 	}
 }

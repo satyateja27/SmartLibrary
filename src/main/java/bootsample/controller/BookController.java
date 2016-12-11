@@ -33,7 +33,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.jayway.jsonpath.JsonPath;
 
-import bootsample.dao.WaitingRepository;
 import bootsample.model.Book;
 import bootsample.model.Transaction;
 import bootsample.model.User;
@@ -122,13 +121,13 @@ public class BookController {
 		User user = (User) request.getSession().getAttribute("user");
 		int userId = user.getUserId();
 		System.out.println(userId);
-//		List<Book> books = bookService.findAllBooksByLibrarian(userId);
+		// List<Book> books = bookService.findAllBooksByLibrarian(userId);
 		List<Waiting> waiting = waitService.findByUser(userId);
 		ModelMap map = new ModelMap();
 		map.addAttribute("waitingBooks", waiting);
 		return new ModelAndView(new MappingJackson2JsonView(), map);
 	}
-	
+
 	@GetMapping("/api/book/getByLibrarian")
 	public ModelAndView getLibrarianBooks(HttpServletRequest request) {
 		User user = (User) request.getSession().getAttribute("user");
@@ -143,12 +142,12 @@ public class BookController {
 	public ModelAndView deleteBook(@RequestParam(value = "bookId", required = true) int bookId) {
 		ModelMap map = new ModelMap();
 		List<Transaction> transactions = transactionService.findBookWithBookId(bookId);
-		if(transactions.size() > 0 ){
-			map.addAttribute("status",500);
-			map.addAttribute("message","Book Checked out, Delete Unsuccesful");
-		}else{
-		bookService.deleteBookById(bookId);
-		map.addAttribute("message", "Delete Succesful");
+		if (transactions.size() > 0) {
+			map.addAttribute("status", 500);
+			map.addAttribute("message", "Book Checked out, Delete Unsuccesful");
+		} else {
+			bookService.deleteBookById(bookId);
+			map.addAttribute("message", "Delete Succesful");
 		}
 		return new ModelAndView(new MappingJackson2JsonView(), map);
 	}
@@ -158,7 +157,7 @@ public class BookController {
 		ModelMap map = new ModelMap();
 		String bookUrl = "http://isbndb.com/api/v2/json/AI9PNP81/book/" + isbn;
 		URL url = new URL(bookUrl);
-		
+
 		HttpURLConnection request = (HttpURLConnection) url.openConnection();
 		request.connect();
 		JsonParser parser = new JsonParser();
@@ -210,10 +209,10 @@ public class BookController {
 			List<Book> books = new ArrayList<>();
 			for (int bookid : bookids) {
 				System.out.println("checking bookids");
-				System.out.println(bookid +" " +userid);
+				System.out.println(bookid + " " + userid);
 				System.out.println(waitService.getWaitStatus(bookid, userid));
-				Waiting waiting = waitService.getWaitStatus(bookid,userid);
-				if(waiting != null){
+				Waiting waiting = waitService.getWaitStatus(bookid, userid);
+				if (waiting != null) {
 					waitService.deleteWaitingUser(waiting.getWaitingId());
 				}
 				Book book = bookService.findOne(bookid);
@@ -288,6 +287,7 @@ public class BookController {
 		String message = (String) result.get("Message");
 		int statuscode = (Integer) result.get("StatusCode");
 		map.addAttribute("Message", message);
+		map.addAttribute("status", statuscode);
 		if (statuscode == 200) {
 			Transaction tran = transactionService.findTransaction(id);
 			User user = tran.getUser();
@@ -298,7 +298,7 @@ public class BookController {
 			map.addAttribute("extended", extended_times);
 			map.addAttribute("Book", book);
 			map.addAttribute("duedate", end_date);
-			map.addAttribute("status", statuscode);
+
 			notificationService.extendBookNotification(user, book, end_date);
 		} else {
 			System.out.println("could not reissue book");
@@ -363,13 +363,14 @@ public class BookController {
 	}
 
 	@PostMapping(value = "/api/book/waiting")
-	public ModelAndView waiting(@RequestParam(value = "book_id", required = true) int bookid, HttpServletRequest request) {
+	public ModelAndView waiting(@RequestParam(value = "book_id", required = true) int bookid,
+			HttpServletRequest request) {
 		ModelMap map = new ModelMap();
 		System.out.println(bookid);
 		User user1 = (User) request.getSession().getAttribute("user");
 		Map<String, Object> result = waitService.waitlist(bookid, user1);
 		int statuscode = (int) result.get("statuscode");
-	Book book=(Book) result.get("book");
+		Book book = (Book) result.get("book");
 		if (statuscode == 200) {
 			map.addAttribute("book", book);
 			map.addAttribute("message", "The books are waitlisted successfully");
@@ -378,25 +379,26 @@ public class BookController {
 		}
 		return new ModelAndView(new MappingJackson2JsonView(), map);
 	}
+
 	@GetMapping("/api/book/checkUserEligibility")
 	public ModelAndView checkUserEligibility(@RequestParam(value = "bookId", required = true) int bookId,
 			HttpServletRequest request) {
 		ModelMap map = new ModelMap();
-		User user = (User)request.getSession().getAttribute("user");
+		User user = (User) request.getSession().getAttribute("user");
 		int userId = user.getUserId();
 		Waiting waiting = waitService.findUserById(userId, bookId);
-		
-		if(waitService.checkBookWaiting(bookId)){
-			if(waiting != null){
-				if(waiting.isReservationFlag()){
-					map.addAttribute("message","Success, user is eligible for adding this book");
-				}else{
-					map.addAttribute("message","Error, user not eligible for adding this book");
+
+		if (waitService.checkBookWaiting(bookId)) {
+			if (waiting != null) {
+				if (waiting.isReservationFlag()) {
+					map.addAttribute("message", "Success, user is eligible for adding this book");
+				} else {
+					map.addAttribute("message", "Error, user not eligible for adding this book");
 				}
-			}else{
-				map.addAttribute("message","Error, user not eligible for adding this book");
+			} else {
+				map.addAttribute("message", "Error, user not eligible for adding this book");
 			}
-		}else{
+		} else {
 			map.addAttribute("message", "Success, user is eligible for adding this book");
 		}
 		return new ModelAndView(new MappingJackson2JsonView(), map);
