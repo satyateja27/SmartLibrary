@@ -11,6 +11,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import bootsample.model.Book;
+import bootsample.model.Transaction;
 import bootsample.model.User;
 
 @Service
@@ -159,6 +160,20 @@ public class NotificationService {
 		javaMailSender.send(message);
 
 		
+	}
+	
+	public void sendDueNotification(Transaction transaction){
+		User user = transaction.getUser();
+		SimpleMailMessage message = new SimpleMailMessage();
+		message.setTo(user.getEmail());
+		message.setFrom("smartlibrarycmpe275@gmail.com");
+		message.setSubject("Book Due Date is approaching");
+		String name = user.getFirstName() + " " + user.getLastName();
+		message.setText("Dear " + name
+				+ ", \n\nYour due date for the following book is approaching. \nPlease return or reissue the book:\nBook ID: "
+				+ transaction.getBook().getBookId() + "\nBook Title: " + transaction.getBook() + "\nBook Title: " + transaction.getEndDate()
+				+ "\n\nPlease visit again. \n \nThis is an automated Message from Smart library. Please Do not reply to this mail.");
+		javaMailSender.send(message);
 	}
 
 

@@ -102,5 +102,26 @@ public class WaitingService {
 			return false;
 		}
 	}
+<<<<<<< HEAD
 
+=======
+	
+	public List<Waiting> findAllWaitingUsers(){
+		return WaitingRepository.findAllWaiting();
+	}
+	
+	public void adjustWaitingList(Waiting waiting){
+		int bookId = waiting.getBook().getBookId();
+		WaitingRepository.delete(waiting);
+		Waiting nextWaiting = WaitingRepository.findNextOne(bookId);
+		if(!(nextWaiting==null)){
+			nextWaiting.setReservationFlag(true);
+			nextWaiting.setBookAvailableDate(new Date());
+			WaitingRepository.save(nextWaiting);
+		}else{
+			System.out.println("No Waiting List");
+		}
+	}
+	
+>>>>>>> 58f290b07d8f3ffaa8d0ee83b39c1d0489725d7d
 }

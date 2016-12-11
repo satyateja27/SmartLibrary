@@ -29,5 +29,8 @@ public interface TransactionRepository extends CrudRepository<Transaction, Integ
 	
 	@Query(value="select * from smartlibrary.transaction where return_flag=0 and book_book_id=?",nativeQuery=true)
 	public List<Transaction> findBookByBookId(int bookid);
+	
+	@Query(value="select * from smartlibrary.transaction where return_flag=0",nativeQuery=true)
+	public List<Transaction> reminderMailDue();
 }
 
