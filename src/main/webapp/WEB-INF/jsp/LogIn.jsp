@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	  <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.10/ngStorage.js"></script>
 </head>
 <body ng-app="myApp" ng-controller="myCtrl" ng-init="show=false">
 		<div >
@@ -29,7 +30,7 @@
 		<div class="col-sm-4" style="text-align:center">
 			<div class="row">
 				<div class="alert alert-danger alert-dismissable" ng-show="error">
-		    	<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+		    	<a href="#" class="close" data-dismiss="alert" aria-label="close">Ã—</a>
 		   		<strong>Error !</strong> Invalid Email/Password. Try again!
 		 		 </div>
 	 		 </div>
@@ -62,10 +63,11 @@
 		</div>
 		
 		<script type="text/javascript">
-		var app = angular.module('myApp',[]);
-		app.controller('myCtrl', function ($scope, $http,$window) {
+		var app = angular.module('myApp',['ngStorage']);
+		app.controller('myCtrl', function ($scope, $http,$window,$localStorage) {
 			$scope.login = function () {
 				console.log('Hello');
+				$localStorage.items = "";
 				var payload = new FormData();
 				payload.append("email",$scope.email);
 				payload.append("password",$scope.password);
