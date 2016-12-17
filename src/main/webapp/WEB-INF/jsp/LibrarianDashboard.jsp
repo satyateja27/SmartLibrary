@@ -68,17 +68,15 @@
                   </div>
                </nav>
             </div>
-                   <div align=right>
-              
-                     <h5>Date, ${sessionScope.systemDate}</h5>
-                    <br><br>
-                  
-                     <h5>Set Date and Time</h5>
+            <div class = "panel-body">
+            	<div class="col-sm-9" style="text-align:left">
                      <form ng-submit="setDate()">
-                     <input type="datetime-local"  ng-model="date"  >
-                     <input type="submit" name="postDate"  value="Set Date">
+                     <input type="datetime-local" ng-model="date"/>
+                     <input type="submit" class="btn btn-primary" name="postDate"  value="Set Date & Time">
                      </form>
-                     </div>
+            	</div>
+            	<div class="col-sm-3" style="text-align:right"><h5 style="text-align:right">Date, ${sessionScope.systemDate}</h5></div>   
+            </div>
          </div>
          <div>
          	<div class="col-sm-1"></div>

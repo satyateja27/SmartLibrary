@@ -80,7 +80,7 @@
             	<div class="col-sm-9" style="text-align:left">
                      <form ng-submit="setDate()">
                      <input type="datetime-local" ng-model="date"/>
-                     <input type="submit" class="btn" style="background-color:#42f4e2" name="postDate"  value="Set Date & Time">
+                     <input type="submit" class="btn btn-primary" name="postDate"  value="Set Date & Time">
                      </form>
             	</div>
             	<div class="col-sm-3" style="text-align:right"><h5 style="text-align:right">Date, ${sessionScope.systemDate}</h5></div>   
