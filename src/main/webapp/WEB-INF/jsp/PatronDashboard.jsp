@@ -72,24 +72,19 @@
                            <a class="nav-link btn" ng-click="logout()" style="color:white"><span class="glyphicon glyphicon-off"></span> Logout</a>
                         </li>
                      </ul>
-                     <br>
-                  
+                     <br/>
                   </div>
-               </nav>
-                 
+               </nav>  
             </div>
-
-                        <div align=right>
-              
-                     <h5>Date, ${sessionScope.systemDate}</h5>
-                    
-                  
-                     <h4><b>Set Date and Time</b></h5>
+            <div class = "panel-body">
+            	<div class="col-sm-9" style="text-align:left">
                      <form ng-submit="setDate()">
-                     <input type="datetime-local"  ng-model="date"  >
-                     <input type="submit" name="postDate"  value="Set Date">
+                     <input type="datetime-local" ng-model="date"/>
+                     <input type="submit" class="btn" style="background-color:#42f4e2" name="postDate"  value="Set Date & Time">
                      </form>
-                     </div>
+            	</div>
+            	<div class="col-sm-3" style="text-align:right"><h5 style="text-align:right">Date, ${sessionScope.systemDate}</h5></div>   
+            </div>
          </div>
          <div>
          	<div class="col-sm-1" ></div>
