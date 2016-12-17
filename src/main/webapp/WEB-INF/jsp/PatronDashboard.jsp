@@ -78,11 +78,19 @@
                </nav>
                  
             </div>
-         </div>
-          <div align=right>
+
+                        <div align=right>
+              
                      <h5>Date, ${sessionScope.systemDate}</h5>
                     
+                  
+                     <h4><b>Set Date and Time</b></h5>
+                     <form ng-submit="setDate()">
+                     <input type="datetime-local"  ng-model="date"  >
+                     <input type="submit" name="postDate"  value="Set Date">
+                     </form>
                      </div>
+         </div>
          <div>
          	<div class="col-sm-1" ></div>
          	<div class="col-sm-8">
@@ -118,26 +126,21 @@
          	app.controller('myCtrl', function($scope, $http,$localStorage){
                  $scope.cart=[];
                  $scope.setDate=function(){
-                	 console.log($scope.date);
-                	 if ($scope.date==null){
-                		alert("Please enter a valid date and time");
-                	 }
-                	 else{	$http({
-         				method:"POST",
-         				url:'/date',
-         				data: $scope.date
-         			
-         			}).success(function(response){
-                		 if(response.status==200){
-                		 console.log("Date has been set");
-                		 }
-                		 else{
-                			 console.log("Try again");
-                		 }
-                	 });
-                	 
-                 }
-                	 }
+                 	 console.log($scope.date);
+                 	 if ($scope.date==null){
+                 		alert("Please enter a valid date and time");
+                 	 }
+                 	 else{	$http({
+          				method:"POST",
+          				url:'/date',
+          				data: $scope.date
+          			
+          			}).success(function(response){
+          				window.location.href="/patronDashboard";
+                 	 });
+                 	 
+                  }
+                 	 }
                  
                  
                  

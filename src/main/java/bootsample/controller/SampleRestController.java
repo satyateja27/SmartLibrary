@@ -46,7 +46,6 @@ public class SampleRestController {
 
 	@Autowired
 	private TransactionService transactionService;
-	public static Date systemD;
 
 	@GetMapping("/hello")
 	public ModelAndView hello() {
@@ -56,31 +55,10 @@ public class SampleRestController {
 		return new ModelAndView(new MappingJackson2JsonView(), map);
 	}
 
-	/*
-	 * @GetMapping("/sendEmail") public ModelAndView sendNotification(){
-	 * ModelMap map = new ModelMap(); map.addAttribute("name", "Vimal");
-	 * map.addAttribute("age", 25); try{
-	 * notificationService.sendEmailVerificationCode(
-	 * "Send by API: Access Code - 9087"); }catch(MailException e){
-	 * System.out.println(e); } return new ModelAndView(new
-	 * MappingJackson2JsonView(), map); }
-	 */
-	// public void changeDate(HttpServletRequest request) {
-	// systemD = (Date) request.getSession().getAttribute("systemDate");
-	//
-	//
-	// }
-
-	@GetMapping("/resetTime")
-	public void resetDate() {
-		systemD = new Date();
-	}
-
 	@Scheduled(cron = "0 0 1 * * *")
 	public void sendNotification() {
-		System.out.println("In cron job" + systemD);
 
-		Date date = systemD;
+		Date date = new Date();
 		List<Transaction> transactions = transactionService.sendDueReminder();
 		for (Transaction transaction : transactions) {
 			int days = Days.daysBetween(new LocalDate(date), new LocalDate(transaction.getEndDate())).getDays();
@@ -90,9 +68,10 @@ public class SampleRestController {
 		}
 	}
 
-	@Scheduled(cron = "0 0 1 * * *")
+	@Scheduled(cron = "0 0 1 1/1 * ?")
 	@GetMapping("/sendEmail")
 	public void removeWaitingList() {
+
 		Date date = new Date();
 		List<Waiting> waitingLists = waitingService.findAllWaitingUsers();
 		for (Waiting waiting : waitingLists) {

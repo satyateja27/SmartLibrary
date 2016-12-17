@@ -155,7 +155,7 @@ public class BookController {
 	@GetMapping("/api/book/getBookByIsbn")
 	public ModelAndView getBookByIsbn(@RequestParam(value = "isbn", required = true) String isbn) throws IOException {
 		ModelMap map = new ModelMap();
-		String bookUrl = "http://isbndb.com/api/v2/json/AI9PNP81/book/"+isbn;
+		String bookUrl = "http://isbndb.com/api/v2/json/AI9PNP81/book/" + isbn;
 		URL url = new URL(bookUrl);
 
 		HttpURLConnection request = (HttpURLConnection) url.openConnection();
@@ -184,7 +184,7 @@ public class BookController {
 		System.out.println(bookids.toString());
 		User user1 = (User) request.getSession().getAttribute("user");
 		int userid = user1.getUserId();
-		Map<String, Object> result = transactionService.beforecheckout(bookids, userid);
+		Map<String, Object> result = transactionService.beforecheckout(bookids, userid, request);
 		System.out.println("result from dtaabase is" + result.values());
 
 		int statuscode = (Integer) result.get("StatusCode");
@@ -193,8 +193,11 @@ public class BookController {
 		List<Book> allBooks = (List<Book>) result.get("books");
 		String message = (String) result.get("Message");
 		if (statuscode == 200) {
+			java.util.Date utilDate = (Date) request.getSession().getAttribute("systemDate");
 
+			java.sql.Date start_date = new java.sql.Date(utilDate.getTime());
 			Calendar c = new GregorianCalendar();
+			c.setTime(start_date);
 			c.add(Calendar.DATE, 30);
 			Date date = c.getTime();
 			java.sql.Date end_date = new java.sql.Date(date.getTime());
@@ -218,7 +221,7 @@ public class BookController {
 				Book book = bookService.findOne(bookid);
 				books.add(book);
 			}
-			notificationService.checkoutNotification(user, books, end_date);
+			notificationService.checkoutNotification(user, books, start_date, end_date);
 
 		} else {
 			System.out.println("Sorry Try again");
@@ -254,7 +257,7 @@ public class BookController {
 			HttpServletRequest request) throws IOException {
 		ModelMap map = new ModelMap();
 		int[] id = transactionId.getTransactionId();
-		Map<String, Object> result = transactionService.returnBook(id);
+		Map<String, Object> result = transactionService.returnBook(id, request);
 
 		int statuscode = (Integer) result.get("StatusCode");
 		int[] dueAmount = (int[]) result.get("Due Amount");
@@ -272,7 +275,7 @@ public class BookController {
 			map.addAttribute("DueAmount", dueAmount);
 			map.addAttribute("books", book);
 
-			notificationService.returnNotification(user, book, dueAmount);
+			notificationService.returnNotification(user, book, dueAmount, request);
 		} else {
 			map.addAttribute("Message", "Please try again!");
 		}
@@ -280,7 +283,8 @@ public class BookController {
 	}
 
 	@PostMapping(value = "/api/book/extendBook")
-	public ModelAndView extendBook(@RequestParam(value = "transactionid", required = true) int id) throws IOException {
+	public ModelAndView extendBook(@RequestParam(value = "transactionid", required = true) int id,
+			HttpServletRequest request) throws IOException {
 		ModelMap map = new ModelMap();
 		System.out.println(id);
 		Map<String, Object> result = transactionService.extendBook(id);
@@ -299,7 +303,7 @@ public class BookController {
 			map.addAttribute("Book", book);
 			map.addAttribute("duedate", end_date);
 
-			notificationService.extendBookNotification(user, book, end_date);
+			notificationService.extendBookNotification(user, book, end_date, request);
 		} else {
 			System.out.println("could not reissue book");
 		}

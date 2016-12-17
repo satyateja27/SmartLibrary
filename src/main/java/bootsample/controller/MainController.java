@@ -25,9 +25,6 @@ public class MainController {
 	@Autowired
 	private HttpSession httpSession;
 
-	@Autowired
-	private SampleRestController sample;
-
 	@GetMapping("/")
 	public String home(HttpServletRequest request) {
 		request.setAttribute("mode", "MODE_HOME");
@@ -103,7 +100,6 @@ public class MainController {
 
 		HttpSession httpSession = request.getSession();
 		httpSession.putValue("systemDate", date);
-		sample.systemD = date;
 		Date testdate = (Date) request.getSession().getAttribute("systemDate");
 		System.out.println("User has entered date" + testdate);
 

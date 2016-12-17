@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
@@ -39,10 +41,10 @@ public class NotificationService {
 		return random;
 	}
 
-	public void checkoutNotification(User user, List<Book> book, Date enddate) throws MailException {
+	public void checkoutNotification(User user, List<Book> book, Date start_date, Date enddate) throws MailException {
 
 		SimpleMailMessage message = new SimpleMailMessage();
-		Date today = new Date();
+		Date today = start_date;
 		String todays = today.toString();
 		System.out.println(message.toString());
 		message.setTo(user.getEmail());
@@ -70,10 +72,12 @@ public class NotificationService {
 
 	}
 
-	public void returnNotification(User user, List<Book> book, int[] dueAmount) throws MailException {
+	public void returnNotification(User user, List<Book> book, int[] dueAmount, HttpServletRequest request)
+			throws MailException {
 
 		SimpleMailMessage message = new SimpleMailMessage();
-		Date today = new Date();
+		Date today = (Date) request.getSession().getAttribute("systemDate");
+
 		String todays = today.toString();
 		System.out.println(message.toString());
 		message.setTo(user.getEmail());
@@ -100,10 +104,11 @@ public class NotificationService {
 
 	}
 
-	public void extendBookNotification(User user, Book book, Date dueDate) throws MailException {
+	public void extendBookNotification(User user, Book book, Date dueDate, HttpServletRequest request)
+			throws MailException {
 
 		SimpleMailMessage message = new SimpleMailMessage();
-		Date today = new Date();
+		Date today = (Date) request.getSession().getAttribute("systemDate");
 		String todays = today.toString();
 		System.out.println(message.toString());
 		message.setTo(user.getEmail());
@@ -134,18 +139,20 @@ public class NotificationService {
 		String saltStr = salt.toString();
 		return saltStr;
 	}
-	
+
 	public void sendWelcomeMessage(User user) throws MailException {
 
 		SimpleMailMessage message = new SimpleMailMessage();
 		System.out.println(message.toString());
 		message.setTo(user.getEmail());
 		message.setFrom("smartlibrarycmpe275@gmail.com");
-		message.setSubject("Hi "+user.getFirstName()+"! Welcome to Smart Library");
-		message.setText("Welcome to Smart Library, You have completed the account verification and Now you can use the services of "+user.getRole());
+		message.setSubject("Hi " + user.getFirstName() + "! Welcome to Smart Library");
+		message.setText(
+				"Welcome to Smart Library, You have completed the account verification and Now you can use the services of "
+						+ user.getRole());
 		javaMailSender.send(message);
 	}
-	
+
 	public void waitlistNotification(User user1, Book book) {
 		SimpleMailMessage message = new SimpleMailMessage();
 		System.out.println(message.toString());
@@ -155,14 +162,14 @@ public class NotificationService {
 		String name = user1.getFirstName() + " " + user1.getLastName();
 		message.setText("Dear " + name
 				+ ", \n\nThank you for visiting our library. \nThe book you have been waiting for is available now:\nBook ID: "
-				+ book.getBookId() + "\nBook Title: " + book.getTitle() +"\nThis book will be reserved for u till 3 days from the moment you receive this email"
+				+ book.getBookId() + "\nBook Title: " + book.getTitle()
+				+ "\nThis book will be reserved for u till 3 days from the moment you receive this email"
 				+ "\n\nPlease visit again. \n \nThis is an automated Message from Smart library. Please Do not reply to this mail.");
 		javaMailSender.send(message);
 
-		
 	}
-	
-	public void sendDueNotification(Transaction transaction){
+
+	public void sendDueNotification(Transaction transaction) {
 		User user = transaction.getUser();
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setTo(user.getEmail());
@@ -171,10 +178,10 @@ public class NotificationService {
 		String name = user.getFirstName() + " " + user.getLastName();
 		message.setText("Dear " + name
 				+ ", \n\nYour due date for the following book is approaching. \nPlease return or reissue the book:\nBook ID: "
-				+ transaction.getBook().getBookId() + "\nBook Title: " + transaction.getBook() + "\nBook Title: " + transaction.getEndDate()
+				+ transaction.getBook().getBookId() + "\nBook Title: " + transaction.getBook() + "\nBook Title: "
+				+ transaction.getEndDate()
 				+ "\n\nPlease visit again. \n \nThis is an automated Message from Smart library. Please Do not reply to this mail.");
 		javaMailSender.send(message);
 	}
-
 
 }

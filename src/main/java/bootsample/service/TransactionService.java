@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 import org.joda.time.DateTime;
@@ -46,16 +47,17 @@ public class TransactionService {
 	public Transaction findTransaction(int tranid) {
 		return TransactionRepository.findOne(tranid);
 	}
-	
-	public List<Transaction> sendDueReminder(){
+
+	public List<Transaction> sendDueReminder() {
 		return TransactionRepository.reminderMailDue();
 	}
 
-	public Map<String, Object> beforecheckout(int[] bookids, int userid) {
+	public Map<String, Object> beforecheckout(int[] bookids, int userid, HttpServletRequest request) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		java.util.Date utilDate = new java.util.Date();
-		java.sql.Date date = new java.sql.Date(utilDate.getTime());
+		java.util.Date utilDate = (Date) request.getSession().getAttribute("systemDate");
 
+		java.sql.Date date = new java.sql.Date(utilDate.getTime());
+		System.out.println("todays date **************" + date);
 		int countperDay = TransactionRepository.countPerDay(userid, date);
 		int countperUser = TransactionRepository.countPerUser(userid);
 		int length = bookids.length;
@@ -114,6 +116,7 @@ public class TransactionService {
 		System.out.println("In checkout function userid" + userid);
 
 		Calendar c = new GregorianCalendar();
+		c.setTime(start_date);
 		c.add(Calendar.DATE, 30);
 		Date date = c.getTime();
 		java.sql.Date end_date = new java.sql.Date(date.getTime());
@@ -131,11 +134,12 @@ public class TransactionService {
 		return issuedBooks;
 	}
 
-	public Map<String, Object> returnBook(int[] tranid) {
+	public Map<String, Object> returnBook(int[] tranid, HttpServletRequest request) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		java.util.Date utilDate = new java.util.Date();
+		java.util.Date utilDate = (Date) request.getSession().getAttribute("systemDate");
 		java.sql.Date returnDate = new java.sql.Date(utilDate.getTime());
-		DateTime todaysDate = new DateTime();
+		DateTime todaysDate = new DateTime(utilDate);
+		System.out.println("todays date*****************" + todaysDate);
 		int dueAmountToMultiply = 1;
 		int dueAmount[] = new int[tranid.length];
 
@@ -177,9 +181,8 @@ public class TransactionService {
 			if (wait != null) {
 				int userid = wait.getUser().getUserId();
 				User user = userService.findUser(userid);
-				Calendar c = new GregorianCalendar();
-				Date date = c.getTime();
-				java.sql.Date available_date = new java.sql.Date(date.getTime());
+				java.sql.Date available_date = returnDate;
+
 				Waiting wait1 = waitService.findUserwaiting(bookid);
 				wait1.setReservationFlag(true);
 				wait1.setBookAvailableDate(available_date);
@@ -215,7 +218,8 @@ public class TransactionService {
 		} else {
 			Waiting wait = waitService.chkForReissue(bookId);
 			System.out.println("waiting id is" + wait);
-			if (wait.getBook().getBookId() == bookId) {
+
+			if (wait != null && wait.getBook().getBookId() == bookId) {
 
 				result.put("Message", "Cannot reissue: Book is in waiting list");
 				result.put("StatusCode", 400);
